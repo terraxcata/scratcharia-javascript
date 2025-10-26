@@ -1,3 +1,5 @@
+// THIS CODE IS NOT MINE
+
 (() => {
     function downloadSiteInfo(filename, text) {
         let elem = document.createElement('a');
