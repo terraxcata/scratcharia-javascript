@@ -1,4 +1,6 @@
-A bunch of scripts for scratcharia mod loader, heres the raw links:
+for use with scratcharia mod loader and the mod https://scratch.mit.edu/projects/1233314479/
+
+A bunch of scripts for scratcharia mod loader, here are the raw links:
 
 [*test js*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/test.js)
