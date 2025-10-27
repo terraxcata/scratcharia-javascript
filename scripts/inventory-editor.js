@@ -275,17 +275,32 @@ window.filterAllItems = function(query) {
     content.innerHTML = generateItemListTableHtml(query);
 };
 
+window.refreshItemList = function() {
+    if (typeof window.vm === 'undefined' || !window.vm.runtime) {
+        return updateStatus("Error: Scratch VM not accessible for item refresh.", 'status-error');
+    }
+
+    loadCostumeMap(window.vm);
+    
+    const searchInput = document.getElementById('item-search-input-tm');
+    const currentQuery = searchInput ? searchInput.value : '';
+    
+    window.filterAllItems(currentQuery);
+
+    updateStatus(`Item list refreshed. ${Object.keys(dynamicItemMap).length} items loaded.`, 'status-active');
+}
+
 window.showAllItems = function() {
     const modal = document.getElementById(ID_ALL_ITEMS_MODAL);
-    const content = modal.querySelector('.modal-content-tm');
-
-    content.innerHTML = generateItemListTableHtml();
 
     const searchInput = document.getElementById('item-search-input-tm');
     if (searchInput) {
         searchInput.value = '';
     }
 
+    const content = modal.querySelector('.modal-content-tm');
+    content.innerHTML = generateItemListTableHtml();
+    
     modal.style.display = 'flex';
 };
 
@@ -460,7 +475,12 @@ function injectControlPanel() {
             padding: 0 15px 10px 15px;
             background-color: #2d2d2d;
         }
+        .modal-search-group-tm {
+            display: flex;
+            gap: 10px;
+        }
         #item-search-input-tm {
+            flex-grow: 1; 
             width: 100%; 
             padding: 8px;
             border: 1px solid #555;
@@ -469,6 +489,19 @@ function injectControlPanel() {
             box-sizing: border-box;
             background-color: #3d3d3d;
             color: white;
+        }
+        #item-refresh-btn-tm {
+            background-color: #3b82f6; 
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+        #item-refresh-btn-tm:hover {
+            background-color: #2563eb;
         }
         .modal-content-tm {
             padding: 15px;
@@ -567,10 +600,13 @@ function injectControlPanel() {
                 <button class="modal-close-btn-tm" onclick="closeAllItemsModal()">×</button>
             </div>
             <div class="modal-search-tm">
-                <input type="text" id="item-search-input-tm" class="input-field-tm" placeholder="Search by ID or Name..." oninput="filterAllItems(this.value)">
+                <div class="modal-search-group-tm">
+                    <input type="text" id="item-search-input-tm" class="input-field-tm" placeholder="Search by ID or Name..." oninput="filterAllItems(this.value)">
+                    <button id="item-refresh-btn-tm" onclick="refreshItemList()">Refresh</button>
+                </div>
             </div>
             <div class="modal-content-tm">
-                <!-- Item list content goes here -->
+                
             </div>
         </div>
     `;
