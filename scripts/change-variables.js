@@ -6,11 +6,11 @@
         console.warn("Variable Setter Plugin is already active.");
         return;
     }
-
+    
     // --- Core Logic ---
     let intervalId = null;
     let availableTargets = [];
-    const UPDATE_INTERVAL = 50; 
+    const UPDATE_INTERVAL = 1; 
     const VARIABLE_TYPES = ['', 'my cloud variable', 'cloud', 'list'];
 
     const ID_CONTROLLER = 'scratch-var-controller';
@@ -28,7 +28,7 @@
             statusElement.className = 'status-message'; 
             statusElement.classList.add(statusClass);
         }
-    }
+    }  
 
     function findVariable(targetObj, varName) {
         if (!targetObj || !varName) return null;
