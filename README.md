@@ -19,3 +19,6 @@ A bunch of scripts for scratcharia mod loader, here are the raw links:
 
 [*inventory editor*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/inventory-editor.js)
+
+[*list deleter*
+](https://raw.githubusercontent.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/list-deleter.js)
