@@ -234,10 +234,8 @@ window.addItemRow = function() {
     addRow('0', '1');
 }
 
-window.showAllItems = function() {
-    const modal = document.getElementById(ID_ALL_ITEMS_MODAL);
-    const content = modal.querySelector('.modal-content-tm');
-
+function generateItemListTableHtml(filterQuery = '') {
+    const query = filterQuery.toLowerCase().trim();
     let html = `
         <table class="item-list-table-tm">
             <thead>
@@ -246,13 +244,21 @@ window.showAllItems = function() {
             <tbody>
     `;
 
-    html += `<tr><td>0</td><td>Empty Slot (ID 0)</td></tr>`;
+    if ('empty slot (id 0)'.includes(query) || '0'.includes(query) || query === '') {
+        html += `<tr><td>0</td><td>Empty Slot (ID 0)</td></tr>`;
+    }
 
     const sortedIds = Object.keys(dynamicItemMap).map(Number).sort((a, b) => a - b);
     
     sortedIds.forEach(id => {
         if (id > 0) {
-            html += `<tr><td>${id}</td><td>${dynamicItemMap[id]}</td></tr>`;
+            const name = dynamicItemMap[id];
+            const nameLower = name.toLowerCase();
+            const idString = id.toString();
+
+            if (query === '' || nameLower.includes(query) || idString.includes(query)) {
+                html += `<tr><td>${id}</td><td>${name}</td></tr>`;
+            }
         }
     });
 
@@ -260,8 +266,26 @@ window.showAllItems = function() {
             </tbody>
         </table>
     `;
+    return html;
+}
 
-    content.innerHTML = html;
+window.filterAllItems = function(query) {
+    const modal = document.getElementById(ID_ALL_ITEMS_MODAL);
+    const content = modal.querySelector('.modal-content-tm');
+    content.innerHTML = generateItemListTableHtml(query);
+};
+
+window.showAllItems = function() {
+    const modal = document.getElementById(ID_ALL_ITEMS_MODAL);
+    const content = modal.querySelector('.modal-content-tm');
+
+    content.innerHTML = generateItemListTableHtml();
+
+    const searchInput = document.getElementById('item-search-input-tm');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+
     modal.style.display = 'flex';
 };
 
@@ -432,6 +456,20 @@ function injectControlPanel() {
             border-top-left-radius: 6px;
             border-top-right-radius: 6px;
         }
+        .modal-search-tm {
+            padding: 0 15px 10px 15px;
+            background-color: #2d2d2d;
+        }
+        #item-search-input-tm {
+            width: 100%; 
+            padding: 8px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #3d3d3d;
+            color: white;
+        }
         .modal-content-tm {
             padding: 15px;
             overflow-y: auto;
@@ -527,6 +565,9 @@ function injectControlPanel() {
             <div class="modal-header-tm">
                 All Available Item IDs
                 <button class="modal-close-btn-tm" onclick="closeAllItemsModal()">×</button>
+            </div>
+            <div class="modal-search-tm">
+                <input type="text" id="item-search-input-tm" class="input-field-tm" placeholder="Search by ID or Name..." oninput="filterAllItems(this.value)">
             </div>
             <div class="modal-content-tm">
                 <!-- Item list content goes here -->
