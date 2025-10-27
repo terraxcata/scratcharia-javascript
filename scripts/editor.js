@@ -5,7 +5,7 @@
 
     // --- Configuration ---
     const PROJECT_ID = '767890722';
-    const EXTENSION_URL = 'PLACEHOLDER';
+    const EXTENSION_URL = 'https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/mod-loader/CustomBlocks.js';
 
     // Construct the full editor URL with the extension parameter
     const EDITOR_URL = `https://turbowarp.org/${PROJECT_ID}/editor?extension=${encodeURIComponent(EXTENSION_URL)}`;
