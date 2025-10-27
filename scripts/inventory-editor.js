@@ -14,6 +14,8 @@ const ID_SAVE_BTN = 'inventory-save-btn';
 const ID_ADD_BTN = 'inventory-add-btn';
 const ID_STATUS = 'inventory-editor-status';
 const ID_MAX_CAPACITY = 'inventory-max-capacity';
+const ID_SHOW_ALL_BTN = 'inventory-show-all-btn';
+const ID_ALL_ITEMS_MODAL = 'inventory-all-items-modal';
 
 let dynamicItemMap = {};
 
@@ -232,6 +234,41 @@ window.addItemRow = function() {
     addRow('0', '1');
 }
 
+window.showAllItems = function() {
+    const modal = document.getElementById(ID_ALL_ITEMS_MODAL);
+    const content = modal.querySelector('.modal-content-tm');
+
+    let html = `
+        <table class="item-list-table-tm">
+            <thead>
+                <tr><th style="width: 25%;">ID</th><th>Item Name (Costume)</th></tr>
+            </thead>
+            <tbody>
+    `;
+
+    html += `<tr><td>0</td><td>Empty Slot (ID 0)</td></tr>`;
+
+    const sortedIds = Object.keys(dynamicItemMap).map(Number).sort((a, b) => a - b);
+    
+    sortedIds.forEach(id => {
+        if (id > 0) {
+            html += `<tr><td>${id}</td><td>${dynamicItemMap[id]}</td></tr>`;
+        }
+    });
+
+    html += `
+            </tbody>
+        </table>
+    `;
+
+    content.innerHTML = html;
+    modal.style.display = 'flex';
+};
+
+window.closeAllItemsModal = function() {
+    document.getElementById(ID_ALL_ITEMS_MODAL).style.display = 'none';
+};
+
 window.dragMouseDown = function(e) {
     e = e || window.event;
     e.preventDefault();
@@ -359,12 +396,69 @@ function injectControlPanel() {
         #${ID_SAVE_BTN}:hover:not(:disabled) { background-color: #1e40af; }
         #${ID_ADD_BTN} { background-color: #10b981; }
         #${ID_ADD_BTN}:hover:not(:disabled) { background-color: #059669; }
+        #${ID_SHOW_ALL_BTN} { background-color: #9333ea; }
+        #${ID_SHOW_ALL_BTN}:hover:not(:disabled) { background-color: #7e22ce; }
         .btn-delete-tm { background-color: #dc2626; color: white; border: none; border-radius: 3px; padding: 2px 6px; cursor: pointer; font-size: 12px; }
         
         .status-message { padding: 5px; border-left: 3px solid; font-size: 12px; border-radius: 4px; margin-top: 10px;}
         .status-ready { background-color: #333322; border-color: #facc15; color: #facc15; }
         .status-active { background-color: #223322; border-color: #34d399; color: #34d399; }
         .status-error { background-color: #332222; border-color: #f87171; color: #f87171; }
+
+        #${ID_ALL_ITEMS_MODAL} {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            max-height: 80vh;
+            background-color: #1e1e1e;
+            border: 2px solid #22c55e;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+            z-index: 20000;
+            display: none;
+            flex-direction: column;
+        }
+        .modal-header-tm {
+            padding: 10px 15px;
+            background-color: #22c55e;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+        }
+        .modal-content-tm {
+            padding: 15px;
+            overflow-y: auto;
+            color: #e0e0e0;
+        }
+        .modal-close-btn-tm {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .item-list-table-tm {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .item-list-table-tm th, .item-list-table-tm td {
+            padding: 5px;
+            border-bottom: 1px solid #444;
+            text-align: left;
+        }
+        .item-list-table-tm th {
+            background-color: #3d3d3d;
+        }
+        .item-list-table-tm tr:hover {
+            background-color: #282828;
+        }
     `;
     document.head.appendChild(style);
 
@@ -398,7 +492,11 @@ function injectControlPanel() {
 
             <div class="input-group-tm">
                 <label class="input-label-tm">3. Edit Inventory Slots:</label>
+            </div>
+
+            <div class="button-group-tm">
                 <button id="${ID_ADD_BTN}" class="btn-tm" onclick="addItemRow()">+ Add Item</button>
+                <button id="${ID_SHOW_ALL_BTN}" class="btn-tm" onclick="showAllItems()">Show All Items</button>
             </div>
             
             <div id="${ID_TABLE_CONTAINER}" class="table-container-tm">
@@ -423,6 +521,15 @@ function injectControlPanel() {
             
             <div id="${ID_STATUS}" class="status-message status-ready">
                 ${initialStatus}
+            </div>
+        </div>
+        <div id="${ID_ALL_ITEMS_MODAL}" style="display: none;">
+            <div class="modal-header-tm">
+                All Available Item IDs
+                <button class="modal-close-btn-tm" onclick="closeAllItemsModal()">×</button>
+            </div>
+            <div class="modal-content-tm">
+                <!-- Item list content goes here -->
             </div>
         </div>
     `;
