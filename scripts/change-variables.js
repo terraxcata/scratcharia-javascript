@@ -1,7 +1,6 @@
 (function() {
     'use strict';
 
-    // Check if the plugin is already running to prevent duplicates
     const ID_CONTROLLER = 'scratch-var-controller';
     if (document.getElementById(ID_CONTROLLER)) {
         console.warn("Variable Setter Plugin is already active. Returning.");
@@ -28,11 +27,6 @@
         value: null
     };
     let availableTargets = [];
-
-
-    // -----------------------------------------------------------------
-    // --- DRAGGING LOGIC ---
-    // -----------------------------------------------------------------
 
     function dragMouseDown(e) {
         e = e || window.event;
@@ -67,10 +61,6 @@
         document.onmouseup = null;
         document.onmousemove = null;
     }
-
-    // -----------------------------------------------------------------
-    // --- APPLICATION CORE LOGIC ---
-    // -----------------------------------------------------------------
 
     function updateStatus(message, statusClass) {
         const statusElement = document.getElementById(ID_STATUS);
@@ -107,7 +97,6 @@
         const foundVar = findVariable(targetObj, varName);
         
         if (foundVar) {
-            // Set the value directly
             foundVar.value = value;
             const targetName = targetObj.isStage ? "Stage" : targetObj.getName();
             updateStatus(`[${targetName}] Setting '${varName}' to: ${value}`, 'status-active');
@@ -117,14 +106,12 @@
         }
     }
     
-    function setterLoop() {
+    function continuousSetterLoop() {
         if (!loopData.isActive) return;
 
         updateVariable(loopData.targetId, loopData.varName, loopData.value);
 
-        if (window.vm && window.vm.runtime && loopData.isActive) {
-            window.vm.runtime.requestExecFrame(setterLoop);
-        }
+        setTimeout(continuousSetterLoop, 0);
     }
 
     window.stopScratchSetterLoop = function() {
@@ -149,7 +136,7 @@
             return;
         }
         
-        if (!window.vm || !window.vm.runtime) {
+        if (typeof window.vm === 'undefined' || !window.vm.runtime) {
              updateStatus("Error: Scratch VM not accessible.", 'status-error');
              return;
         }
@@ -161,11 +148,11 @@
         loopData.varName = varName;
         loopData.value = value;
         
-        window.vm.runtime.requestExecFrame(setterLoop);
+        continuousSetterLoop();
 
         document.getElementById(ID_START_BTN).disabled = true;
         document.getElementById(ID_STOP_BTN).disabled = false;
-        updateStatus(`Loop Active: Setting '${varName}' to ${value} every execution frame.`, 'status-active');
+        updateStatus(`Loop Active: Setting '${varName}' using immediate (0ms) loop.`, 'status-active');
     };
     
     window.toggleMinimize = function() {
@@ -174,20 +161,16 @@
         const button = document.querySelector(`#${ID_HEADER} .minimize-btn`);
         
         if (content.style.display === 'none') {
-            // Maximize
             content.style.display = 'block';
             controller.style.width = '320px';
             button.textContent = '—';
         } else {
-            // Minimize
             content.style.display = 'none';
             controller.style.width = 'fit-content';
             button.textContent = '◻';
         }
     };
 
-
-    // --- Setup Functions ---
     function getAvailableTargets(vm) {
         const targets = [];
         for (const target of vm.runtime.targets) {
@@ -203,7 +186,6 @@
     }
 
     function injectControlPanel() {
-        // --- 1. Define and Inject CSS ---
         const style = document.createElement('style');
         style.textContent = `
             #${ID_CONTROLLER} { 
@@ -256,7 +238,7 @@
 
         const html = `
             <div id="${ID_HEADER}" class="scratch-var-title">
-                <span>Scratch Variable Setter (Frame-Synced)</span>
+                <span>Scratch Variable Setter (Immediate Loop)</span>
                 <button class="minimize-btn" onclick="toggleMinimize()">—</button>
             </div>
             <div id="${ID_CONTENT}">
