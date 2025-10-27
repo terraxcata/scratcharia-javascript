@@ -541,7 +541,7 @@ function injectControlPanel() {
 
     const html = `
         <div id="${ID_HEADER}">
-            <span>Inventory Editor (Live)</span>
+            <span>Inventory/List Editor</span>
             <button class="minimize-btn" onclick="toggleMinimize()">—</button>
         </div>
         <div id="${ID_CONTENT}">
@@ -553,8 +553,8 @@ function injectControlPanel() {
             </div>
             
             <div class="input-group-tm">
-                <label for="${ID_LIST_NAME}" class="input-label-tm">2. List Name (E.g., Inventory):</label>
-                <input type="text" id="${ID_LIST_NAME}" value="Inventory" class="input-field-tm">
+                <label for="${ID_LIST_NAME}" class="input-label-tm">2. List Name (E.g., _inv or _Level):</label>
+                <input type="text" id="${ID_LIST_NAME}" value="_inv" class="input-field-tm">
             </div>
             
             <div class="button-group-tm">
