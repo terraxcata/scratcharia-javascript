@@ -14,5 +14,5 @@ A bunch of scripts for scratcharia mod loader, here are the raw links:
 [*custom console*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/console.js)
 
-[*change variables
+[*change variables*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/change-variables.js)
