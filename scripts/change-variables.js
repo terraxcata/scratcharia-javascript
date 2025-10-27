@@ -2,24 +2,75 @@
     'use strict';
 
     // Check if the plugin is already running to prevent duplicates
-    if (document.getElementById('scratch-var-controller')) {
-        console.warn("Variable Setter Plugin is already active.");
+    const ID_CONTROLLER = 'scratch-var-controller';
+    if (document.getElementById(ID_CONTROLLER)) {
+        console.warn("Variable Setter Plugin is already active. Returning.");
         return;
     }
-    
-    // --- Core Logic ---
-    let intervalId = null;
-    let availableTargets = [];
-    const UPDATE_INTERVAL = 1; 
+
     const VARIABLE_TYPES = ['', 'my cloud variable', 'cloud', 'list'];
 
-    const ID_CONTROLLER = 'scratch-var-controller';
+    const ID_HEADER = 'scratch-var-header';
+    const ID_CONTENT = 'scratch-var-content';
     const ID_TARGET_SELECT = 'scratch-target-select';
     const ID_VAR_NAME = 'scratch-var-name';
     const ID_VAR_VALUE = 'scratch-var-value';
     const ID_STATUS = 'scratch-var-status';
     const ID_START_BTN = 'scratch-var-start';
     const ID_STOP_BTN = 'scratch-var-stop';
+
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    
+    let loopData = {
+        isActive: false,
+        targetId: null,
+        varName: null,
+        value: null
+    };
+    let availableTargets = [];
+
+
+    // -----------------------------------------------------------------
+    // --- DRAGGING LOGIC ---
+    // -----------------------------------------------------------------
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        const controller = document.getElementById(ID_CONTROLLER); 
+        if (!controller) return;
+
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        
+        const controller = document.getElementById(ID_CONTROLLER); 
+        if (!controller) return;
+
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        controller.style.top = (controller.offsetTop - pos2) + "px";
+        controller.style.left = (controller.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+
+    // -----------------------------------------------------------------
+    // --- APPLICATION CORE LOGIC ---
+    // -----------------------------------------------------------------
 
     function updateStatus(message, statusClass) {
         const statusElement = document.getElementById(ID_STATUS);
@@ -28,17 +79,15 @@
             statusElement.className = 'status-message'; 
             statusElement.classList.add(statusClass);
         }
-    }  
+    }
 
     function findVariable(targetObj, varName) {
         if (!targetObj || !varName) return null;
-
         const variables = targetObj.variables;
         let foundVar = null;
 
         for (const varId in variables) {
             const currentVar = variables[varId];
-
             if (currentVar.name === varName && VARIABLE_TYPES.includes(currentVar.type)) {
                 foundVar = currentVar;
                 break;
@@ -51,28 +100,38 @@
         const targetObj = availableTargets.find(t => t.id === targetId)?.targetObj;
 
         if (!targetObj) {
-            updateStatus("Error: Selected sprite/stage object not found.", 'status-error');
-            stopLoop();
+            updateStatus("Error: Target object not found.", 'status-error');
             return;
         }
 
         const foundVar = findVariable(targetObj, varName);
         
         if (foundVar) {
+            // Set the value directly
             foundVar.value = value;
             const targetName = targetObj.isStage ? "Stage" : targetObj.getName();
             updateStatus(`[${targetName}] Setting '${varName}' to: ${value}`, 'status-active');
         } else {
-            updateStatus(`Variable '${varName}' not found on target '${targetObj.getName() || "Stage"}'. Stopping.`, 'status-error');
-            stopLoop();
+            updateStatus(`Variable '${varName}' not found. Check name/target.`, 'status-error');
+            window.stopScratchSetterLoop(); 
+        }
+    }
+    
+    function setterLoop() {
+        if (!loopData.isActive) return;
+
+        updateVariable(loopData.targetId, loopData.varName, loopData.value);
+
+        if (window.vm && window.vm.runtime && loopData.isActive) {
+            window.vm.runtime.requestExecFrame(setterLoop);
         }
     }
 
     window.stopScratchSetterLoop = function() {
-        if (intervalId !== null) {
-            clearInterval(intervalId);
-            intervalId = null;
+        if (loopData.isActive) {
+            loopData.isActive = false;
         }
+        
         const startBtn = document.getElementById(ID_START_BTN);
         const stopBtn = document.getElementById(ID_STOP_BTN);
         if (startBtn) startBtn.disabled = false;
@@ -89,17 +148,44 @@
             updateStatus("Please enter a valid number and variable name.", 'status-ready');
             return;
         }
+        
+        if (!window.vm || !window.vm.runtime) {
+             updateStatus("Error: Scratch VM not accessible.", 'status-error');
+             return;
+        }
 
         window.stopScratchSetterLoop();
+
+        loopData.isActive = true;
+        loopData.targetId = targetId;
+        loopData.varName = varName;
+        loopData.value = value;
         
-        intervalId = setInterval(() => {
-            updateVariable(targetId, varName, value);
-        }, UPDATE_INTERVAL);
+        window.vm.runtime.requestExecFrame(setterLoop);
 
         document.getElementById(ID_START_BTN).disabled = true;
         document.getElementById(ID_STOP_BTN).disabled = false;
-        updateStatus(`Loop Active: Setting '${varName}' to ${value} every ${UPDATE_INTERVAL}ms.`, 'status-active');
+        updateStatus(`Loop Active: Setting '${varName}' to ${value} every execution frame.`, 'status-active');
     };
+    
+    window.toggleMinimize = function() {
+        const content = document.getElementById(ID_CONTENT);
+        const controller = document.getElementById(ID_CONTROLLER);
+        const button = document.querySelector(`#${ID_HEADER} .minimize-btn`);
+        
+        if (content.style.display === 'none') {
+            // Maximize
+            content.style.display = 'block';
+            controller.style.width = '320px';
+            button.textContent = '—';
+        } else {
+            // Minimize
+            content.style.display = 'none';
+            controller.style.width = 'fit-content';
+            button.textContent = '◻';
+        }
+    };
+
 
     // --- Setup Functions ---
     function getAvailableTargets(vm) {
@@ -117,10 +203,28 @@
     }
 
     function injectControlPanel() {
+        // --- 1. Define and Inject CSS ---
         const style = document.createElement('style');
         style.textContent = `
-            #${ID_CONTROLLER} { position: fixed; bottom: 20px; right: 20px; z-index: 10000; background-color: white; padding: 15px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); width: 320px; font-family: Arial, sans-serif; }
-            .scratch-var-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #4f46e5; }
+            #${ID_CONTROLLER} { 
+                position: fixed; bottom: 20px; right: 20px; z-index: 10000;
+                background-color: #f7f7f7; padding: 0; border: 1px solid #ccc;
+                border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                width: 320px; font-family: Arial, sans-serif;
+            }
+            #${ID_HEADER} {
+                padding: 8px 15px; background-color: #4f46e5; color: white;
+                font-size: 16px; font-weight: bold; cursor: move; 
+                border-top-left-radius: 8px; border-top-right-radius: 8px;
+                display: flex; justify-content: space-between; align-items: center;
+            }
+            #${ID_HEADER} .minimize-btn {
+                background: none; border: none; color: white; font-size: 18px;
+                cursor: pointer; padding: 0 5px; line-height: 1;
+            }
+            #${ID_CONTENT} {
+                padding: 15px;
+            }
             .input-group-tm { margin-bottom: 10px; }
             .input-label-tm { display: block; font-size: 12px; margin-bottom: 3px; color: #333; }
             .input-field-tm, .select-field-tm { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
@@ -138,7 +242,11 @@
         `;
         document.head.appendChild(style);
 
-        // --- 2. Define HTML and Populate Dropdown ---
+        if (typeof window.vm === 'undefined' || !window.vm.runtime || window.vm.runtime.targets.length === 0) {
+            console.error("Scratch VM not ready for panel injection.");
+            return;
+        }
+
         availableTargets = getAvailableTargets(window.vm);
 
         const targetOptions = availableTargets.map(t => 
@@ -147,30 +255,34 @@
 
 
         const html = `
-            <div class="scratch-var-title">Variable Setter</div>
+            <div id="${ID_HEADER}" class="scratch-var-title">
+                <span>Scratch Variable Setter (Frame-Synced)</span>
+                <button class="minimize-btn" onclick="toggleMinimize()">—</button>
+            </div>
+            <div id="${ID_CONTENT}">
+                <div class="input-group-tm">
+                    <label for="${ID_TARGET_SELECT}" class="input-label-tm">1. Select Target (Sprite or Stage):</label>
+                    <select id="${ID_TARGET_SELECT}" class="select-field-tm">${targetOptions}</select>
+                </div>
+                
+                <div class="input-group-tm">
+                    <label for="${ID_VAR_NAME}" class="input-label-tm">2. Variable Name (E.g., Day Night):</label>
+                    <input type="text" id="${ID_VAR_NAME}" value="Day Night" class="input-field-tm">
+                </div>
 
-            <div class="input-group-tm">
-                <label for="${ID_TARGET_SELECT}" class="input-label-tm">1. Select Target (Sprite or Stage):</label>
-                <select id="${ID_TARGET_SELECT}" class="select-field-tm">${targetOptions}</select>
-            </div>
-            
-            <div class="input-group-tm">
-                <label for="${ID_VAR_NAME}" class="input-label-tm">2. Variable Name (E.g., Day Night):</label>
-                <input type="text" id="${ID_VAR_NAME}" value="Day Night" class="input-field-tm">
-            </div>
+                <div class="input-group-tm">
+                    <label for="${ID_VAR_VALUE}" class="input-label-tm">3. Value to Set:</label>
+                    <input type="number" id="${ID_VAR_VALUE}" value="" step="0.01" placeholder="Enter number here..." class="input-field-tm">
+                </div>
 
-            <div class="input-group-tm">
-                <label for="${ID_VAR_VALUE}" class="input-label-tm">3. Value to Set:</label>
-                <input type="number" id="${ID_VAR_VALUE}" value="1" step="0.01" class="input-field-tm">
-            </div>
-
-            <div class="button-group-tm">
-                <button id="${ID_START_BTN}" class="btn-tm" onclick="startScratchSetterLoop()">Start Setting</button>
-                <button id="${ID_STOP_BTN}" class="btn-tm" onclick="stopScratchSetterLoop()" disabled>Stop</button>
-            </div>
-            
-            <div id="${ID_STATUS}" class="status-message status-ready">
-                Ready. Select target and variable name.
+                <div class="button-group-tm">
+                    <button id="${ID_START_BTN}" class="btn-tm" onclick="startScratchSetterLoop()">Start Setting</button>
+                    <button id="${ID_STOP_BTN}" class="btn-tm" onclick="stopScratchSetterLoop()" disabled>Stop</button>
+                </div>
+                
+                <div id="${ID_STATUS}" class="status-message status-ready">
+                    Ready. Enter value and start loop.
+                </div>
             </div>
         `;
 
@@ -178,6 +290,8 @@
         container.id = ID_CONTROLLER;
         container.innerHTML = html;
         document.body.appendChild(container);
+        
+        document.getElementById(ID_HEADER).onmousedown = dragMouseDown;
 
         window.stopScratchSetterLoop();
     }
@@ -189,6 +303,7 @@
             setTimeout(checkVMReady, 500);
         }
     }
+
     checkVMReady();
 
 })();
