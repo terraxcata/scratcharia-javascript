@@ -7,8 +7,9 @@
     const ID_HEADER = 'eg-header';
     const ID_CONTENT = 'eg-tab-container';
     const ID_STATUS_INV = 'eg-status-inventory';
-    const ID_STATUS_VAR = 'eg-status-var';
-    const ID_TARGET_SELECT = 'inv-target-select';
+    const ID_STATUS_VAR_LOOP = 'eg-status-var-loop';
+    const ID_STATUS_GOD = 'eg-status-godmode';
+    const ID_TARGET_SELECT_INV = 'inv-target-select';
     const ID_LIST_NAME = 'inv-list-name';
     const ID_TABLE_CONTAINER = 'inv-table-container';
     const ID_LOAD_BTN = 'inv-load-btn';
@@ -18,16 +19,17 @@
     const ID_SHOW_ALL_BTN = 'inv-show-all-btn';
     const ID_ALL_ITEMS_MODAL = 'inv-all-items-modal';
     const ID_MODAL_SEARCH_INPUT = 'item-search-input-tm';
-    const ID_VAR_TARGET_SELECT = 'var-target-select';
-    const ID_VAR_NAME = 'var-name-input';
-    const ID_VAR_VALUE = 'var-value-input';
-    const ID_VAR_LOAD_BTN = 'var-load-btn';
-    const ID_VAR_SET_BTN = 'var-set-btn';
+    const ID_TARGET_SELECT_VAR = 'var-loop-target-select';
+    const ID_VAR_NAME = 'var-loop-name-input';
+    const ID_VAR_VALUE = 'var-loop-value-input';
+    const ID_START_BTN = 'var-loop-start-btn';
+    const ID_STOP_BTN = 'var-loop-stop-btn';
+    const VARIABLE_TYPES_ALL = ['', 'my cloud variable', 'cloud', 'list'];
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     let availableTargets = [];
     let currentListVar = null;
     let dynamicItemMap = {};
-    let currentVariable = null;
+    let loopData = { isActive: false, targetId: null, varName: null, value: null };
     function updateStatus(message, statusId, statusClass) {
         const statusElement = document.getElementById(statusId);
         if (statusElement) {
@@ -42,7 +44,7 @@
             if (target.isStage || target.isOriginal) {
                 targets.push({
                     id: target.id,
-                    name: target.isStage ? "Stage (Global Lists/Vars)" : target.getName(),
+                    name: target.isStage ? "Stage (Global)" : target.getName(),
                     targetObj: target
                 });
             }
@@ -53,7 +55,7 @@
         const numericId = parseInt(id);
         if (isNaN(numericId) || numericId < 0) return 'Invalid ID';
         if (numericId === 0) return 'Empty Slot (ID 0)';
-        return dynamicItemMap[numericId] || `Item ID ${numericId} (Unknown/Missing Costume)`;
+        return dynamicItemMap[numericId] || `Item ID ${numericId} (Unknown)`;
     }
     window.updateItemName = function(inputElement) {
         const id = inputElement.value;
@@ -72,11 +74,12 @@
             dynamicItemMap[id] = costume.name;
         });
     }
-    function findList(targetObj, listName) {
-        if (!targetObj || !listName) return null;
+    function findVariable(targetObj, varName, isList = false) {
+        if (!targetObj || !varName) return null;
+        const targetType = isList ? 'list' : 'variable';
         for (const varId in targetObj.variables) {
             const currentVar = targetObj.variables[varId];
-            if (currentVar.name === listName && currentVar.type === 'list') {
+            if (currentVar.name === varName && currentVar.type === targetType) {
                 return currentVar;
             }
         }
@@ -104,14 +107,14 @@
         if (typeof window.vm === 'undefined' || !window.vm.runtime) {
             return updateStatus("Error: Scratch VM not accessible.", ID_STATUS_INV, 'status-error');
         }
-        const targetId = document.getElementById(ID_TARGET_SELECT).value;
+        const targetId = document.getElementById(ID_TARGET_SELECT_INV).value;
         const listName = document.getElementById(ID_LIST_NAME).value.trim();
         const tableBody = document.querySelector(`#${ID_TABLE_CONTAINER} tbody`);
         const target = availableTargets.find(t => t.id === targetId);
         if (!target || !listName) {
             return updateStatus("Please select a target and enter a list name.", ID_STATUS_INV, 'status-ready');
         }
-        let listVar = findList(target.targetObj, listName);
+        let listVar = findVariable(target.targetObj, listName, true);
         if (!listVar) {
              return updateStatus(`List **'${listName}'** not found in target **'${target.name}'**.`, ID_STATUS_INV, 'status-error');
         }
@@ -220,61 +223,90 @@
     window.closeAllItemsModal = function() {
         document.getElementById(ID_ALL_ITEMS_MODAL).style.display = 'none';
     };
-    function findVariable(targetObj, varName) {
+    // --- Variable Setter Loop Core Logic ---
+    function findVariableLoop(targetObj, varName) {
         if (!targetObj || !varName) return null;
-        for (const varId in targetObj.variables) {
-            const currentVar = targetObj.variables[varId];
-            if (currentVar.name === varName && currentVar.type === 'variable') {
-                return currentVar;
+        const variables = targetObj.variables;
+        let foundVar = null;
+        for (const varId in variables) {
+            const currentVar = variables[varId];
+            if (currentVar.name === varName && VARIABLE_TYPES_ALL.includes(currentVar.type)) {
+                foundVar = currentVar;
+                break;
             }
         }
-        return null;
+        return foundVar;
     }
-    window.loadVariable = function() {
-        if (typeof window.vm === 'undefined' || !window.vm.runtime) {
-            return updateStatus("Error: Scratch VM not accessible.", ID_STATUS_VAR, 'status-error');
+    function updateVariableLoop(targetId, varName, value) {
+        const targetObj = availableTargets.find(t => t.id === targetId)?.targetObj;
+        if (!targetObj) {
+            updateStatus("Error: Target object not found.", ID_STATUS_VAR_LOOP, 'status-error');
+            return;
         }
-        const targetId = document.getElementById(ID_VAR_TARGET_SELECT).value;
+        const foundVar = findVariableLoop(targetObj, varName);
+        if (foundVar) {
+            foundVar.value = value;
+            const targetName = targetObj.isStage ? "Stage" : targetObj.getName();
+            updateStatus(`[${targetName}] Setting '${varName}' to: ${value}`, ID_STATUS_VAR_LOOP, 'status-active');
+        } else {
+            updateStatus(`Variable '${varName}' not found. Check name/target.`, ID_STATUS_VAR_LOOP, 'status-error');
+            window.SetterLoop_stop();
+        }
+    }
+    function continuousSetterLoop() {
+        if (!loopData.isActive) return;
+        updateVariableLoop(loopData.targetId, loopData.varName, loopData.value);
+        setTimeout(continuousSetterLoop, 0);
+    }
+    window.SetterLoop_stop = function() {
+        if (loopData.isActive) {
+            loopData.isActive = false;
+        }
+        const startBtn = document.getElementById(ID_START_BTN);
+        const stopBtn = document.getElementById(ID_STOP_BTN);
+        if (startBtn) startBtn.disabled = false;
+        if (stopBtn) stopBtn.disabled = true;
+        updateStatus("Loop Stopped. Ready for new input.", ID_STATUS_VAR_LOOP, 'status-ready');
+    };
+    window.SetterLoop_start = function() {
+        const targetId = document.getElementById(ID_TARGET_SELECT_VAR).value;
         const varName = document.getElementById(ID_VAR_NAME).value.trim();
-        const valueInput = document.getElementById(ID_VAR_VALUE);
-        const target = availableTargets.find(t => t.id === targetId);
-        if (!target || !varName) {
-            return updateStatus("Select a target and enter a variable name.", ID_STATUS_VAR, 'status-ready');
+        const valueInput = document.getElementById(ID_VAR_VALUE).value;
+        const value = isNaN(Number(valueInput)) || valueInput.trim() === '' ? valueInput : Number(valueInput);
+        if (!varName) {
+            updateStatus("Please enter a variable name.", ID_STATUS_VAR_LOOP, 'status-ready');
+            return;
         }
-        let variable = findVariable(target.targetObj, varName);
-        if (!variable) {
-            currentVariable = null;
-            return updateStatus(`Variable **'${varName}'** not found in target **'${target.name}'**.`, ID_STATUS_VAR, 'status-error');
+        if (typeof window.vm === 'undefined' || !window.vm.runtime) {
+            updateStatus("Error: Scratch VM not accessible.", ID_STATUS_VAR_LOOP, 'status-error');
+            return;
         }
-        currentVariable = variable;
-        valueInput.value = variable.value;
-        updateStatus(`Loaded **'${varName}'**. Current value: **${variable.value}**.`, ID_STATUS_VAR, 'status-active');
-    }
-    window.setVariable = function() {
-        if (!currentVariable) {
-            return updateStatus("Please load a variable before attempting to set it.", ID_STATUS_VAR, 'status-ready');
-        }
-        const newValue = document.getElementById(ID_VAR_VALUE).value;
-        const finalValue = isNaN(Number(newValue)) || newValue.trim() === '' ? newValue : Number(newValue);
-        currentVariable.value = finalValue;
-        updateStatus(`Set **'${currentVariable.name}'** to **${finalValue}**.`, ID_STATUS_VAR, 'status-active');
-    }
+        window.SetterLoop_stop();
+        loopData.isActive = true;
+        loopData.targetId = targetId;
+        loopData.varName = varName;
+        loopData.value = value;
+        continuousSetterLoop();
+        document.getElementById(ID_START_BTN).disabled = true;
+        document.getElementById(ID_STOP_BTN).disabled = false;
+        updateStatus(`Loop Active: Setting '${varName}' to **${value}**.`, ID_STATUS_VAR_LOOP, 'status-active');
+    };
+    // --- God Mode Logic ---
     window.setGodMode = function(isGod) {
         if (typeof window.vm === 'undefined' || !window.vm.runtime) {
-            return updateStatus("Error: Scratch VM not accessible.", 'eg-status-godmode', 'status-error');
+            return updateStatus("Error: Scratch VM not accessible.", ID_STATUS_GOD, 'status-error');
         }
         const playerTarget = window.vm.runtime.targets.find(t => t.getName() === 'Player' && t.isOriginal);
         if (!playerTarget) {
-            return updateStatus("Could not find a target named 'Player'. **God Mode failed.**", 'eg-status-godmode', 'status-error');
+            return updateStatus("Could not find a target named 'Player'. **God Mode failed.**", ID_STATUS_GOD, 'status-error');
         }
         let hpVar = findVariable(playerTarget, 'hp');
-        let statusId = 'eg-status-godmode';
         if (isGod) {
             if (hpVar) hpVar.value = 99999;
-            updateStatus('**GOD MODE ACTIVATED!** Health set to max (99999).', statusId, 'status-active');
+            updateStatus('GOD MODE ACTIVATED! Health set to max (99999).', ID_STATUS_GOD, 'status-active');
         } else {
             if (hpVar) hpVar.value = 10;
-            updateStatus('**God Mode Deactivated.** Health reset to default (10).', statusId, 'status-ready');
+            updateStatus('God Mode Deactivated. Health reset to default (10).', ID_STATUS_GOD, 'status-ready');
         }
     }
     window.EG_dragMouseDown = function(e) {
@@ -351,14 +383,19 @@
             .input-field-tm, .select-field-tm { width: 100%; padding: 8px; border: 1px solid #4a5568; border-radius: 4px; font-size: 14px; box-sizing: border-box; background-color: #2d3748; color: #f7f7f7; }
             .button-group-tm { display: flex; gap: 10px; margin-top: 10px; margin-bottom: 10px; }
             .btn-tm { flex-grow: 1; padding: 8px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; transition: background-color 0.15s; color: white; }
-            #${ID_LOAD_BTN}, #${ID_VAR_LOAD_BTN} { background-color: #ecc94b; color: #1a202c; } 
-            #${ID_LOAD_BTN}:hover, #${ID_VAR_LOAD_BTN}:hover { background-color: #d69e2e; }
-            #${ID_SAVE_BTN}, #${ID_VAR_SET_BTN} { background-color: #48bb78; } 
-            #${ID_SAVE_BTN}:hover, #${ID_VAR_SET_BTN}:hover { background-color: #38a169; }
+            #${ID_LOAD_BTN} { background-color: #ecc94b; color: #1a202c; } 
+            #${ID_LOAD_BTN}:hover { background-color: #d69e2e; }
+            #${ID_SAVE_BTN} { background-color: #48bb78; } 
+            #${ID_SAVE_BTN}:hover { background-color: #38a169; }
             #${ID_ADD_BTN} { background-color: #9f7aea; } 
             #${ID_ADD_BTN}:hover { background-color: #805ad5; }
             #${ID_SHOW_ALL_BTN} { background-color: #63b3ed; } 
             #${ID_SHOW_ALL_BTN}:hover { background-color: #4299e1; }
+            #${ID_START_BTN} { background-color: #4f46e5; color: white; }
+            #${ID_START_BTN}:hover:not(:disabled) { background-color: #4338ca; }
+            #${ID_STOP_BTN} { background-color: #ef4444; color: white; }
+            #${ID_STOP_BTN}:hover:not(:disabled) { background-color: #dc2626; }
+            .btn-tm:disabled { opacity: 0.5; cursor: not-allowed; }
             .btn-god-on { background-color: #e53e3e !important; }
             .btn-god-on:hover { background-color: #c53030 !important; }
             .btn-god-off { background-color: #48bb78 !important; }
@@ -406,14 +443,14 @@
             <div id="${ID_CONTENT}">
                 <div id="eg-tab-links">
                     <a class="eg-tab-link active" onclick="EG_openTab('tab-inventory')">Inventory</a>
-                    <a class="eg-tab-link" onclick="EG_openTab('tab-var-setter')">Var Setter</a>
+                    <a class="eg-tab-link" onclick="EG_openTab('tab-var-setter-loop')">Loop Setter</a>
                     <a class="eg-tab-link" onclick="EG_openTab('tab-god-mode')">God Mode</a>
                 </div>
                 <div id="tab-inventory" class="eg-tab-content" style="display: block;">
                     <input type="hidden" id="${ID_MAX_CAPACITY}" value="0">
                     <div class="input-group-tm">
-                        <label for="${ID_TARGET_SELECT}" class="input-label-tm">1. List Target (Sprite/Stage):</label>
-                        <select id="${ID_TARGET_SELECT}" class="select-field-tm">${targetOptions}</select>
+                        <label for="${ID_TARGET_SELECT_INV}" class="input-label-tm">1. List Target (Sprite/Stage):</label>
+                        <select id="${ID_TARGET_SELECT_INV}" class="select-field-tm">${targetOptions}</select>
                     </div>
                     <div class="input-group-tm">
                         <label for="${ID_LIST_NAME}" class="input-label-tm">2. List Name (e.g., _inv):</label>
@@ -447,34 +484,33 @@
                     </div>
                     <div id="${ID_STATUS_INV}" class="eg-status-message status-ready">Ready. Load list to begin editing.</div>
                 </div>
-                <div id="tab-var-setter" class="eg-tab-content">
+                <div id="tab-var-setter-loop" class="eg-tab-content">
+                    <p class="input-label-tm" style="margin-top: 0;">Continuously sets a variable's value.</p>
                     <div class="input-group-tm">
-                        <label for="${ID_VAR_TARGET_SELECT}" class="input-label-tm">1. Variable Target (Sprite/Stage):</label>
-                        <select id="${ID_VAR_TARGET_SELECT}" class="select-field-tm">${targetOptions}</select>
+                        <label for="${ID_TARGET_SELECT_VAR}" class="input-label-tm">1. Variable Target (Sprite/Stage):</label>
+                        <select id="${ID_TARGET_SELECT_VAR}" class="select-field-tm">${targetOptions}</select>
                     </div>
                     <div class="input-group-tm">
                         <label for="${ID_VAR_NAME}" class="input-label-tm">2. Variable Name:</label>
                         <input type="text" id="${ID_VAR_NAME}" value="score" class="input-field-tm">
                     </div>
-                    <div class="button-group-tm">
-                        <button id="${ID_VAR_LOAD_BTN}" class="btn-tm" onclick="loadVariable()">Load Variable</button>
-                    </div>
                     <div class="input-group-tm">
-                        <label for="${ID_VAR_VALUE}" class="input-label-tm">3. New Value:</label>
-                        <input type="text" id="${ID_VAR_VALUE}" value="0" class="input-field-tm">
+                        <label for="${ID_VAR_VALUE}" class="input-label-tm">3. Value to Set:</label>
+                        <input type="text" id="${ID_VAR_VALUE}" value="9999" class="input-field-tm">
                     </div>
                     <div class="button-group-tm">
-                        <button id="${ID_VAR_SET_BTN}" class="btn-tm" onclick="setVariable()">Set New Value</button>
+                        <button id="${ID_START_BTN}" class="btn-tm" onclick="SetterLoop_start()">Start Setting Loop</button>
+                        <button id="${ID_STOP_BTN}" class="btn-tm" onclick="SetterLoop_stop()" disabled>Stop Loop</button>
                     </div>
-                    <div id="${ID_STATUS_VAR}" class="eg-status-message status-ready">Load a variable to view/change its value.</div>
+                    <div id="${ID_STATUS_VAR_LOOP}" class="eg-status-message status-ready">Select variable, enter value, and start loop.</div>
                 </div>
                 <div id="tab-god-mode" class="eg-tab-content">
-                    <p class="input-label-tm" style="margin-top: 0;">Toggle invincibility and maximum health for the Player sprite.</p>
+                    <p class="input-label-tm" style="margin-top: 0;">Toggle invincibility and maximum health for the Player.</p>
                     <div class="button-group-tm">
                         <button class="btn-tm btn-god-on" onclick="setGodMode(true)">Activate God Mode</button>
                         <button class="btn-tm btn-god-off" onclick="setGodMode(false)">Deactivate God Mode</button>
                     </div>
-                    <div id="eg-status-godmode" class="eg-status-message status-ready">Awaiting God Mode command. (Assumes 'Player' sprite and 'hp' variable exist)</div>
+                    <div id="${ID_STATUS_GOD}" class="eg-status-message status-ready">Awaiting God Mode command. (Assumes 'Player' sprite and 'hp' variable exist)</div>
                 </div>
             </div>
             <div id="${ID_ALL_ITEMS_MODAL}" style="display: none;">
@@ -506,4 +542,4 @@
         }
     }
     EG_checkVMReady();
-})();  
+})();
