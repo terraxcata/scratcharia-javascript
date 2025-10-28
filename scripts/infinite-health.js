@@ -17,11 +17,12 @@
 
     const PLAYER_HEALTH_VAR = "Player Health";
     const PLAYER_MAX_HEALTH_VAR = "Player Max Health";
-    const MEGA_VALUE = 10000000;
+    const MEGA_VALUE = 9999999999999;
     const DEFAULT_VALUE = 10;
 
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    let stageTargetId = null;
+    let targetId = null;
+    let targetName = null;
     let availableTargets = [];
     
     let loopData = {
@@ -120,9 +121,9 @@
             loopData.isActive = false;
         }
         
-        if (stageTargetId) {
-            setSpecificVariable(stageTargetId, PLAYER_MAX_HEALTH_VAR, DEFAULT_VALUE);
-            setSpecificVariable(stageTargetId, PLAYER_HEALTH_VAR, DEFAULT_VALUE);
+        if (targetId) {
+            setSpecificVariable(targetId, PLAYER_MAX_HEALTH_VAR, DEFAULT_VALUE);
+            setSpecificVariable(targetId, PLAYER_HEALTH_VAR, DEFAULT_VALUE);
         }
 
         const startBtn = document.getElementById(ID_MH_START_BTN);
@@ -133,21 +134,21 @@
     };
 
     window.MH_startMegaHealth = function() {
-        if (typeof window.vm === 'undefined' || !window.vm.runtime || !stageTargetId) {
-             updateStatus("Error: Scratch VM or Stage not accessible.", 'status-error');
+        if (typeof window.vm === 'undefined' || !window.vm.runtime || !targetId) {
+             updateStatus("Error: Scratch VM or Player Sprite not accessible.", 'status-error');
              return;
         }
 
         window.MH_stopMegaHealth();
 
         for (let i = 0; i < 3; i++) {
-            if (!setSpecificVariable(stageTargetId, PLAYER_MAX_HEALTH_VAR, MEGA_VALUE)) {
+            if (!setSpecificVariable(targetId, PLAYER_MAX_HEALTH_VAR, MEGA_VALUE)) {
                  return;
             }
         }
         
         loopData.isActive = true;
-        loopData.targetId = stageTargetId;
+        loopData.targetId = targetId;
         loopData.varName = PLAYER_HEALTH_VAR;
         loopData.value = MEGA_VALUE;
         
@@ -155,7 +156,7 @@
 
         document.getElementById(ID_MH_START_BTN).disabled = true;
         document.getElementById(ID_MH_STOP_BTN).disabled = false;
-        updateStatus(`Infinite Health Active. Max Health: ${MEGA_VALUE}. Looping Health...`, 'status-active');
+        updateStatus(`Infinite Health Active. Max Health: ${MEGA_VALUE}`, 'status-active');
     };
     
     window.MH_toggleMinimize = function() {
@@ -231,26 +232,31 @@
         }
 
         availableTargets = getAvailableTargets(window.vm);
-        const stageTarget = availableTargets.find(t => t.name.includes("Stage"));
-        if (!stageTarget) {
-            console.error("Scratch Stage target not found.");
+        
+        const mainTarget = availableTargets.find(t => t.name === "Player");
+
+        if (!mainTarget) {
+            console.error("Scratch sprite named 'Player' not found.");
+            updateStatus("Error: Sprite 'Player' not found. Please check the sprite name is exactly 'Player'.", 'status-error');
             return;
         }
-        stageTargetId = stageTarget.id;
+
+        targetId = mainTarget.id;
+        targetName = mainTarget.name;
 
         const html = `
             <div id="${ID_MH_HEADER}" class="scratch-var-title">
-                <span>Infinite Health / God Mode Controller</span>
+                <span>Infinite Health</span>
                 <button class="minimize-btn" onclick="MH_toggleMinimize()">—</button>
             </div>
             <div id="${ID_MH_CONTENT}">
                 <div class="input-group-tm">
                     <p style="font-size: 14px; margin-bottom: 10px; color: #333;">
-                        This tool targets the **Stage** to modify:
+                        This tool sets your health to a big ass number;
                         <br/>
                         &bull; **Player Max Health** (Set to ${MEGA_VALUE.toLocaleString()})
                         <br/>
-                        &bull; **Player Health** (Looped to ${MEGA_VALUE.toLocaleString()})
+                        &bull; **Player Health** (Loop Set to ${MEGA_VALUE.toLocaleString()})
                     </p>
                 </div>
 
