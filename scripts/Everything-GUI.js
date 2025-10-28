@@ -33,6 +33,10 @@
 
     // --- Core Utility Functions ---
 
+    function anticheatBypass() {
+        // placeholder
+    }
+    
     function updateStatus(message, statusId, statusClass) {
         const statusElement = document.getElementById(statusId);
         if (statusElement) {
