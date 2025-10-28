@@ -252,7 +252,7 @@ function injectControlPanel() {
         `<option value="${t.id}" ${t.name.includes("Stage") ? 'selected' : ''}>${t.name}</option>`
     ).join('');
 
-    const initialStatus = 'Ready to find and delete Scratch list data.';
+    const initialStatus = 'Ready to find and delete list data.';
 
     const html = `
         <div id="${ID_HEADER}">
