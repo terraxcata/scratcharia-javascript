@@ -102,7 +102,7 @@
             updateStatus(`[${targetName}] Setting '${varName}' to: ${value}`, 'status-active');
         } else {
             updateStatus(`Variable '${varName}' not found. Check name/target.`, 'status-error');
-            window.stopScratchSetterLoop(); 
+            window.Setter_stopLoop(); 
         }
     }
     
@@ -114,7 +114,7 @@
         setTimeout(continuousSetterLoop, 0);
     }
 
-    window.stopScratchSetterLoop = function() {
+    window.Setter_stopLoop = function() {
         if (loopData.isActive) {
             loopData.isActive = false;
         }
@@ -126,7 +126,7 @@
         updateStatus("Loop Stopped. Ready for new input.", 'status-ready');
     };
 
-    window.startScratchSetterLoop = function() {
+    window.Setter_startLoop = function() {
         const targetId = document.getElementById(ID_TARGET_SELECT).value;
         const varName = document.getElementById(ID_VAR_NAME).value;
         const value = parseFloat(document.getElementById(ID_VAR_VALUE).value);
@@ -141,7 +141,7 @@
              return;
         }
 
-        window.stopScratchSetterLoop();
+        window.Setter_stopLoop();
 
         loopData.isActive = true;
         loopData.targetId = targetId;
@@ -155,7 +155,7 @@
         updateStatus(`Loop Active: Setting '${varName}' using immediate (0ms) loop.`, 'status-active');
     };
     
-    window.toggleMinimize = function() {
+    window.Setter_toggleMinimize = function() {
         const content = document.getElementById(ID_CONTENT);
         const controller = document.getElementById(ID_CONTROLLER);
         const button = document.querySelector(`#${ID_HEADER} .minimize-btn`);
@@ -239,7 +239,7 @@
         const html = `
             <div id="${ID_HEADER}" class="scratch-var-title">
                 <span>Scratch Variable Setter (Immediate Loop)</span>
-                <button class="minimize-btn" onclick="toggleMinimize()">—</button>
+                <button class="minimize-btn" onclick="Setter_toggleMinimize()">—</button>
             </div>
             <div id="${ID_CONTENT}">
                 <div class="input-group-tm">
@@ -258,8 +258,8 @@
                 </div>
 
                 <div class="button-group-tm">
-                    <button id="${ID_START_BTN}" class="btn-tm" onclick="startScratchSetterLoop()">Start Setting</button>
-                    <button id="${ID_STOP_BTN}" class="btn-tm" onclick="stopScratchSetterLoop()" disabled>Stop</button>
+                    <button id="${ID_START_BTN}" class="btn-tm" onclick="Setter_startLoop()">Start Setting</button>
+                    <button id="${ID_STOP_BTN}" class="btn-tm" onclick="Setter_stopLoop()" disabled>Stop</button>
                 </div>
                 
                 <div id="${ID_STATUS}" class="status-message status-ready">
@@ -275,7 +275,7 @@
         
         document.getElementById(ID_HEADER).onmousedown = dragMouseDown;
 
-        window.stopScratchSetterLoop();
+        window.Setter_stopLoop();
     }
 
     function checkVMReady() {
