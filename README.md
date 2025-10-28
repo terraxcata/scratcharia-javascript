@@ -22,3 +22,6 @@ A bunch of scripts for scratcharia mod loader, here are the raw links:
 
 [*list deleter*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/list-deleter.js)
+
+[*infinite health*
+](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/infinite-health.js)
