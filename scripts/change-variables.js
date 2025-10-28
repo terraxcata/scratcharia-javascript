@@ -152,7 +152,7 @@
 
         document.getElementById(ID_START_BTN).disabled = true;
         document.getElementById(ID_STOP_BTN).disabled = false;
-        updateStatus(`Loop Active: Setting '${varName}' using immediate (0ms) loop.`, 'status-active');
+        updateStatus(`Loop Active: Setting '${varName}'. `, 'status-active');
     };
     
     window.Setter_toggleMinimize = function() {
@@ -238,7 +238,7 @@
 
         const html = `
             <div id="${ID_HEADER}" class="scratch-var-title">
-                <span>Scratch Variable Setter (Immediate Loop)</span>
+                <span>Scratch Variable Setter</span>
                 <button class="minimize-btn" onclick="Setter_toggleMinimize()">—</button>
             </div>
             <div id="${ID_CONTENT}">
