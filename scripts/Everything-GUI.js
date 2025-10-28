@@ -20,12 +20,11 @@
     const ID_ALL_ITEMS_MODAL = 'inv-all-items-modal';
     const ID_MODAL_SEARCH_INPUT = 'item-search-input-tm';
     const ID_TARGET_SELECT_VAR = 'var-loop-target-select';
-    const ID_VAR_SELECT = 'var-loop-select'; // NEW DROPDOWN ID
+    const ID_VAR_SELECT = 'var-loop-select';
     const ID_VAR_VALUE = 'var-loop-value-input';
     const ID_START_BTN = 'var-loop-start-btn';
     const ID_STOP_BTN = 'var-loop-stop-btn';
-    const VARIABLE_TYPES_ALL = ['', 'my cloud variable', 'cloud', 'list'];
-    const VARIABLE_TYPES_SCALAR = ['', 'my cloud variable', 'cloud']; // Lists excluded for var setter
+    const VARIABLE_TYPES_SCALAR = ['', 'my cloud variable', 'cloud'];
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     let availableTargets = [];
     let currentListVar = null;
@@ -56,20 +55,22 @@
         }
         return targets;
     }
-
+    
+    // Universal Variable Finder (Used by Inventory and God Mode)
     function findVariable(targetObj, varName, isList = false) {
         if (!targetObj || !varName) return null;
         const targetType = isList ? 'list' : 'variable';
         for (const varId in targetObj.variables) {
             const currentVar = targetObj.variables[varId];
-            if (currentVar.name === varName && currentVar.type === targetType) {
+            if (currentVar.name === varName && (isList ? currentVar.type === 'list' : currentVar.type !== 'list')) {
                 return currentVar;
             }
         }
         return null;
     }
+
+    // --- Variable Setter Loop Functions ---
     
-    // --- New Variable Search/Update Function ---
     window.updateVariableSelector = function() {
         const selector = document.getElementById(ID_VAR_SELECT);
         const targetId = document.getElementById(ID_TARGET_SELECT_VAR).value;
@@ -83,11 +84,11 @@
         let optionsHtml = '<option value="" disabled selected>-- Select a Variable --</option>';
         const variables = target.targetObj.variables;
         
-        // Collect all SCALAR variables (excluding lists)
         let varNames = [];
         for (const varId in variables) {
             const v = variables[varId];
-            if (VARIABLE_TYPES_SCALAR.includes(v.type)) {
+            // Only include scalar variables (non-lists)
+            if (VARIABLE_TYPES_SCALAR.includes(v.type) || (v.type === 'variable' && v.name !== v.name)) {
                 varNames.push(v.name);
             }
         }
@@ -98,10 +99,92 @@
         
         selector.innerHTML = optionsHtml;
         updateStatus(`Found ${varNames.length} variables for target **'${target.name}'**.`, ID_STATUS_VAR_LOOP, 'status-ready');
-        window.SetterLoop_stop(); // Stop loop if target changes
+        window.SetterLoop_stop();
     }
 
-    // --- Inventory Tab Logic ---
+    function updateVariableLoop(targetId, varName, value) {
+        const targetObj = availableTargets.find(t => t.id === targetId)?.targetObj;
+        if (!targetObj) {
+            updateStatus("Error: Target object not found.", ID_STATUS_VAR_LOOP, 'status-error');
+            return;
+        }
+        // Use findVariable, but for non-lists
+        const foundVar = findVariable(targetObj, varName, false); 
+        if (foundVar) {
+            foundVar.value = value;
+            const targetName = targetObj.isStage ? "Stage" : targetObj.getName();
+            updateStatus(`[${targetName}] Setting '${varName}' to: ${value}`, ID_STATUS_VAR_LOOP, 'status-active');
+        } else {
+            updateStatus(`Variable '${varName}' not found. Check name/target.`, ID_STATUS_VAR_LOOP, 'status-error');
+            window.SetterLoop_stop();
+        }
+    }
+    
+    function continuousSetterLoop() {
+        if (!loopData.isActive) return;
+        updateVariableLoop(loopData.targetId, loopData.varName, loopData.value);
+        setTimeout(continuousSetterLoop, 0);
+    }
+
+    window.SetterLoop_stop = function() {
+        if (loopData.isActive) {
+            loopData.isActive = false;
+        }
+        const startBtn = document.getElementById(ID_START_BTN);
+        const stopBtn = document.getElementById(ID_STOP_BTN);
+        if (startBtn) startBtn.disabled = false;
+        if (stopBtn) stopBtn.disabled = true;
+        updateStatus("Loop Stopped. Ready for new input.", ID_STATUS_VAR_LOOP, 'status-ready');
+    };
+    
+    window.SetterLoop_start = function() {
+        const targetId = document.getElementById(ID_TARGET_SELECT_VAR).value;
+        const varName = document.getElementById(ID_VAR_SELECT).value.trim();
+        const valueInput = document.getElementById(ID_VAR_VALUE).value;
+        const value = isNaN(Number(valueInput)) || valueInput.trim() === '' ? valueInput : Number(valueInput);
+        
+        if (!varName) {
+            updateStatus("Please select a variable name.", ID_STATUS_VAR_LOOP, 'status-ready');
+            return;
+        }
+        if (typeof window.vm === 'undefined' || !window.vm.runtime) {
+            updateStatus("Error: Scratch VM not accessible.", ID_STATUS_VAR_LOOP, 'status-error');
+            return;
+        }
+        window.SetterLoop_stop();
+        loopData.isActive = true;
+        loopData.targetId = targetId;
+        loopData.varName = varName;
+        loopData.value = value;
+        continuousSetterLoop();
+        document.getElementById(ID_START_BTN).disabled = true;
+        document.getElementById(ID_STOP_BTN).disabled = false;
+        updateStatus(`Loop Active: Setting **'${varName}'** to **${value}**.`, ID_STATUS_VAR_LOOP, 'status-active');
+    };
+
+    // --- God Mode Logic (FIXED) ---
+
+    window.setGodMode = function(isGod) {
+        if (typeof window.vm === 'undefined' || !window.vm.runtime) {
+            return updateStatus("Error: Scratch VM not accessible.", ID_STATUS_GOD, 'status-error');
+        }
+        const playerTarget = window.vm.runtime.targets.find(t => t.getName() === 'Player' && t.isOriginal);
+        if (!playerTarget) {
+            return updateStatus("Could not find a target named 'Player'. **God Mode failed.**", ID_STATUS_GOD, 'status-error');
+        }
+        // Use the universal findVariable (isList=false)
+        let hpVar = findVariable(playerTarget, 'hp', false); 
+        
+        if (isGod) {
+            if (hpVar) hpVar.value = 99999;
+            updateStatus('**GOD MODE ACTIVATED!** Health set to max (99999).', ID_STATUS_GOD, 'status-active');
+        } else {
+            if (hpVar) hpVar.value = 10;
+            updateStatus('**God Mode Deactivated.** Health reset to default (10).', ID_STATUS_GOD, 'status-ready');
+        }
+    }
+
+    // --- Inventory Tab Logic (Item Map, Load/Save) ---
 
     function getItemName(id) {
         const numericId = parseInt(id);
@@ -155,7 +238,7 @@
         if (!target || !listName) {
             return updateStatus("Please select a target and enter a list name.", ID_STATUS_INV, 'status-ready');
         }
-        let listVar = findVariable(target.targetObj, listName, true);
+        let listVar = findVariable(target.targetObj, listName, true); // isList=true
         if (!listVar) {
              return updateStatus(`List **'${listName}'** not found in target **'${target.name}'**.`, ID_STATUS_INV, 'status-error');
         }
@@ -265,97 +348,6 @@
         document.getElementById(ID_ALL_ITEMS_MODAL).style.display = 'none';
     };
 
-    // --- Variable Setter Loop Core Logic ---
-
-    function findVariableLoop(targetObj, varName) {
-        if (!targetObj || !varName) return null;
-        const variables = targetObj.variables;
-        let foundVar = null;
-        for (const varId in variables) {
-            const currentVar = variables[varId];
-            if (currentVar.name === varName && VARIABLE_TYPES_SCALAR.includes(currentVar.type)) {
-                foundVar = currentVar;
-                break;
-            }
-        }
-        return foundVar;
-    }
-    function updateVariableLoop(targetId, varName, value) {
-        const targetObj = availableTargets.find(t => t.id === targetId)?.targetObj;
-        if (!targetObj) {
-            updateStatus("Error: Target object not found.", ID_STATUS_VAR_LOOP, 'status-error');
-            return;
-        }
-        const foundVar = findVariableLoop(targetObj, varName);
-        if (foundVar) {
-            foundVar.value = value;
-            const targetName = targetObj.isStage ? "Stage" : targetObj.getName();
-            updateStatus(`[${targetName}] Setting '${varName}' to: ${value}`, ID_STATUS_VAR_LOOP, 'status-active');
-        } else {
-            updateStatus(`Variable '${varName}' not found. Check name/target.`, ID_STATUS_VAR_LOOP, 'status-error');
-            window.SetterLoop_stop();
-        }
-    }
-    function continuousSetterLoop() {
-        if (!loopData.isActive) return;
-        updateVariableLoop(loopData.targetId, loopData.varName, loopData.value);
-        setTimeout(continuousSetterLoop, 0);
-    }
-    window.SetterLoop_stop = function() {
-        if (loopData.isActive) {
-            loopData.isActive = false;
-        }
-        const startBtn = document.getElementById(ID_START_BTN);
-        const stopBtn = document.getElementById(ID_STOP_BTN);
-        if (startBtn) startBtn.disabled = false;
-        if (stopBtn) stopBtn.disabled = true;
-        updateStatus("Loop Stopped. Ready for new input.", ID_STATUS_VAR_LOOP, 'status-ready');
-    };
-    window.SetterLoop_start = function() {
-        const targetId = document.getElementById(ID_TARGET_SELECT_VAR).value;
-        const varName = document.getElementById(ID_VAR_SELECT).value.trim(); // Changed to use the dropdown
-        const valueInput = document.getElementById(ID_VAR_VALUE).value;
-        const value = isNaN(Number(valueInput)) || valueInput.trim() === '' ? valueInput : Number(valueInput);
-        
-        if (!varName) {
-            updateStatus("Please select a variable name.", ID_STATUS_VAR_LOOP, 'status-ready');
-            return;
-        }
-        if (typeof window.vm === 'undefined' || !window.vm.runtime) {
-            updateStatus("Error: Scratch VM not accessible.", ID_STATUS_VAR_LOOP, 'status-error');
-            return;
-        }
-        window.SetterLoop_stop();
-        loopData.isActive = true;
-        loopData.targetId = targetId;
-        loopData.varName = varName;
-        loopData.value = value;
-        continuousSetterLoop();
-        document.getElementById(ID_START_BTN).disabled = true;
-        document.getElementById(ID_STOP_BTN).disabled = false;
-        updateStatus(`Loop Active: Setting **'${varName}'** to **${value}**.`, ID_STATUS_VAR_LOOP, 'status-active');
-    };
-
-    // --- God Mode Logic ---
-
-    window.setGodMode = function(isGod) {
-        if (typeof window.vm === 'undefined' || !window.vm.runtime) {
-            return updateStatus("Error: Scratch VM not accessible.", ID_STATUS_GOD, 'status-error');
-        }
-        const playerTarget = window.vm.runtime.targets.find(t => t.getName() === 'Player' && t.isOriginal);
-        if (!playerTarget) {
-            return updateStatus("Could not find a target named 'Player'. **God Mode failed.**", ID_STATUS_GOD, 'status-error');
-        }
-        let hpVar = findVariable(playerTarget, 'hp');
-        if (isGod) {
-            if (hpVar) hpVar.value = 99999;
-            updateStatus('**GOD MODE ACTIVATED!** Health set to max (99999).', ID_STATUS_GOD, 'status-active');
-        } else {
-            if (hpVar) hpVar.value = 10;
-            updateStatus('**God Mode Deactivated.** Health reset to default (10).', ID_STATUS_GOD, 'status-ready');
-        }
-    }
-    
     // --- GUI & Initialization Logic ---
     
     window.EG_dragMouseDown = function(e) {
@@ -394,7 +386,6 @@
         document.getElementById(tabName).style.display = "block";
         event.currentTarget.classList.add("active");
 
-        // Special logic for Variable Setter tab
         if (tabName === 'tab-var-setter-loop') {
             window.updateVariableSelector();
         }
