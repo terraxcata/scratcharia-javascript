@@ -34,7 +34,23 @@
     // --- Core Utility Functions ---
 
     function anticheatBypass() {
-        // placeholder
+         document.removeEventListener("contextmenu", e => e.preventDefault());
+         document.onkeydown = null;
+         console.log("DevTools keybinds and right-click have been restored.");
+    }
+
+    function allowMods() {
+        if (hasLoadedMod === true) {
+        const timerId = setTimeout(() => {
+        hasLoadedMod = false;
+        }, 500);
+      }
+
+        if (hasLoadedTexturePack === true) {
+           const timerId = setTimeout(() => {
+           hasLoadedTexturePack = false;
+        }, 500);
+      }
     }
     
     function updateStatus(message, statusId, statusClass) {
@@ -593,4 +609,6 @@
         }
     }
     EG_checkVMReady();
+    allowMods();
+    anticheatBypass();
 })();
