@@ -20,16 +20,20 @@
     const ID_ALL_ITEMS_MODAL = 'inv-all-items-modal';
     const ID_MODAL_SEARCH_INPUT = 'item-search-input-tm';
     const ID_TARGET_SELECT_VAR = 'var-loop-target-select';
-    const ID_VAR_NAME = 'var-loop-name-input';
+    const ID_VAR_SELECT = 'var-loop-select'; // NEW DROPDOWN ID
     const ID_VAR_VALUE = 'var-loop-value-input';
     const ID_START_BTN = 'var-loop-start-btn';
     const ID_STOP_BTN = 'var-loop-stop-btn';
     const VARIABLE_TYPES_ALL = ['', 'my cloud variable', 'cloud', 'list'];
+    const VARIABLE_TYPES_SCALAR = ['', 'my cloud variable', 'cloud']; // Lists excluded for var setter
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     let availableTargets = [];
     let currentListVar = null;
     let dynamicItemMap = {};
     let loopData = { isActive: false, targetId: null, varName: null, value: null };
+
+    // --- Core Utility Functions ---
+
     function updateStatus(message, statusId, statusClass) {
         const statusElement = document.getElementById(statusId);
         if (statusElement) {
@@ -38,6 +42,7 @@
             statusElement.classList.add(statusClass);
         }
     }
+
     function getAvailableTargets(vm) {
         const targets = [];
         for (const target of vm.runtime.targets) {
@@ -51,6 +56,53 @@
         }
         return targets;
     }
+
+    function findVariable(targetObj, varName, isList = false) {
+        if (!targetObj || !varName) return null;
+        const targetType = isList ? 'list' : 'variable';
+        for (const varId in targetObj.variables) {
+            const currentVar = targetObj.variables[varId];
+            if (currentVar.name === varName && currentVar.type === targetType) {
+                return currentVar;
+            }
+        }
+        return null;
+    }
+    
+    // --- New Variable Search/Update Function ---
+    window.updateVariableSelector = function() {
+        const selector = document.getElementById(ID_VAR_SELECT);
+        const targetId = document.getElementById(ID_TARGET_SELECT_VAR).value;
+        const target = availableTargets.find(t => t.id === targetId);
+
+        if (!target || !selector) {
+            selector.innerHTML = '<option value="">-- No Target Selected --</option>';
+            return;
+        }
+
+        let optionsHtml = '<option value="" disabled selected>-- Select a Variable --</option>';
+        const variables = target.targetObj.variables;
+        
+        // Collect all SCALAR variables (excluding lists)
+        let varNames = [];
+        for (const varId in variables) {
+            const v = variables[varId];
+            if (VARIABLE_TYPES_SCALAR.includes(v.type)) {
+                varNames.push(v.name);
+            }
+        }
+
+        varNames.sort().forEach(name => {
+            optionsHtml += `<option value="${name}">${name}</option>`;
+        });
+        
+        selector.innerHTML = optionsHtml;
+        updateStatus(`Found ${varNames.length} variables for target **'${target.name}'**.`, ID_STATUS_VAR_LOOP, 'status-ready');
+        window.SetterLoop_stop(); // Stop loop if target changes
+    }
+
+    // --- Inventory Tab Logic ---
+
     function getItemName(id) {
         const numericId = parseInt(id);
         if (isNaN(numericId) || numericId < 0) return 'Invalid ID';
@@ -73,17 +125,6 @@
             const id = index + 1;
             dynamicItemMap[id] = costume.name;
         });
-    }
-    function findVariable(targetObj, varName, isList = false) {
-        if (!targetObj || !varName) return null;
-        const targetType = isList ? 'list' : 'variable';
-        for (const varId in targetObj.variables) {
-            const currentVar = targetObj.variables[varId];
-            if (currentVar.name === varName && currentVar.type === targetType) {
-                return currentVar;
-            }
-        }
-        return null;
     }
     function addRow(id = '0', amount = '0') {
         const tableBody = document.querySelector(`#${ID_TABLE_CONTAINER} tbody`);
@@ -223,14 +264,16 @@
     window.closeAllItemsModal = function() {
         document.getElementById(ID_ALL_ITEMS_MODAL).style.display = 'none';
     };
+
     // --- Variable Setter Loop Core Logic ---
+
     function findVariableLoop(targetObj, varName) {
         if (!targetObj || !varName) return null;
         const variables = targetObj.variables;
         let foundVar = null;
         for (const varId in variables) {
             const currentVar = variables[varId];
-            if (currentVar.name === varName && VARIABLE_TYPES_ALL.includes(currentVar.type)) {
+            if (currentVar.name === varName && VARIABLE_TYPES_SCALAR.includes(currentVar.type)) {
                 foundVar = currentVar;
                 break;
             }
@@ -270,11 +313,12 @@
     };
     window.SetterLoop_start = function() {
         const targetId = document.getElementById(ID_TARGET_SELECT_VAR).value;
-        const varName = document.getElementById(ID_VAR_NAME).value.trim();
+        const varName = document.getElementById(ID_VAR_SELECT).value.trim(); // Changed to use the dropdown
         const valueInput = document.getElementById(ID_VAR_VALUE).value;
         const value = isNaN(Number(valueInput)) || valueInput.trim() === '' ? valueInput : Number(valueInput);
+        
         if (!varName) {
-            updateStatus("Please enter a variable name.", ID_STATUS_VAR_LOOP, 'status-ready');
+            updateStatus("Please select a variable name.", ID_STATUS_VAR_LOOP, 'status-ready');
             return;
         }
         if (typeof window.vm === 'undefined' || !window.vm.runtime) {
@@ -289,9 +333,11 @@
         continuousSetterLoop();
         document.getElementById(ID_START_BTN).disabled = true;
         document.getElementById(ID_STOP_BTN).disabled = false;
-        updateStatus(`Loop Active: Setting '${varName}' to **${value}**.`, ID_STATUS_VAR_LOOP, 'status-active');
+        updateStatus(`Loop Active: Setting **'${varName}'** to **${value}**.`, ID_STATUS_VAR_LOOP, 'status-active');
     };
+
     // --- God Mode Logic ---
+
     window.setGodMode = function(isGod) {
         if (typeof window.vm === 'undefined' || !window.vm.runtime) {
             return updateStatus("Error: Scratch VM not accessible.", ID_STATUS_GOD, 'status-error');
@@ -303,12 +349,15 @@
         let hpVar = findVariable(playerTarget, 'hp');
         if (isGod) {
             if (hpVar) hpVar.value = 99999;
-            updateStatus('GOD MODE ACTIVATED! Health set to max (99999).', ID_STATUS_GOD, 'status-active');
+            updateStatus('**GOD MODE ACTIVATED!** Health set to max (99999).', ID_STATUS_GOD, 'status-active');
         } else {
             if (hpVar) hpVar.value = 10;
-            updateStatus('God Mode Deactivated. Health reset to default (10).', ID_STATUS_GOD, 'status-ready');
+            updateStatus('**God Mode Deactivated.** Health reset to default (10).', ID_STATUS_GOD, 'status-ready');
         }
     }
+    
+    // --- GUI & Initialization Logic ---
+    
     window.EG_dragMouseDown = function(e) {
         e = e || window.event;
         e.preventDefault();
@@ -344,6 +393,11 @@
         }
         document.getElementById(tabName).style.display = "block";
         event.currentTarget.classList.add("active");
+
+        // Special logic for Variable Setter tab
+        if (tabName === 'tab-var-setter-loop') {
+            window.updateVariableSelector();
+        }
     };
     window.EG_toggleMinimize = function() {
         const content = document.getElementById(ID_CONTENT);
@@ -485,14 +539,16 @@
                     <div id="${ID_STATUS_INV}" class="eg-status-message status-ready">Ready. Load list to begin editing.</div>
                 </div>
                 <div id="tab-var-setter-loop" class="eg-tab-content">
-                    <p class="input-label-tm" style="margin-top: 0;">Continuously sets a variable's value.</p>
+                    <p class="input-label-tm" style="margin-top: 0;">Continuously sets a variable's value to bypass game logic.</p>
                     <div class="input-group-tm">
                         <label for="${ID_TARGET_SELECT_VAR}" class="input-label-tm">1. Variable Target (Sprite/Stage):</label>
-                        <select id="${ID_TARGET_SELECT_VAR}" class="select-field-tm">${targetOptions}</select>
+                        <select id="${ID_TARGET_SELECT_VAR}" class="select-field-tm" onchange="updateVariableSelector()">${targetOptions}</select>
                     </div>
                     <div class="input-group-tm">
-                        <label for="${ID_VAR_NAME}" class="input-label-tm">2. Variable Name:</label>
-                        <input type="text" id="${ID_VAR_NAME}" value="score" class="input-field-tm">
+                        <label for="${ID_VAR_SELECT}" class="input-label-tm">2. Variable Name:</label>
+                        <select id="${ID_VAR_SELECT}" class="select-field-tm">
+                            <option value="" disabled selected>-- Select a Variable --</option>
+                        </select>
                     </div>
                     <div class="input-group-tm">
                         <label for="${ID_VAR_VALUE}" class="input-label-tm">3. Value to Set:</label>
@@ -505,7 +561,7 @@
                     <div id="${ID_STATUS_VAR_LOOP}" class="eg-status-message status-ready">Select variable, enter value, and start loop.</div>
                 </div>
                 <div id="tab-god-mode" class="eg-tab-content">
-                    <p class="input-label-tm" style="margin-top: 0;">Toggle invincibility and maximum health for the Player.</p>
+                    <p class="input-label-tm" style="margin-top: 0;">Toggle invincibility and maximum health for the Player sprite.</p>
                     <div class="button-group-tm">
                         <button class="btn-tm btn-god-on" onclick="setGodMode(true)">Activate God Mode</button>
                         <button class="btn-tm btn-god-off" onclick="setGodMode(false)">Deactivate God Mode</button>
