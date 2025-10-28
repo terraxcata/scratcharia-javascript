@@ -192,12 +192,11 @@
         if (!playerTarget) {
             return updateStatus("Could not find a target named 'Player'. **God Mode failed.**", ID_STATUS_GOD, 'status-error');
         }
-        // Use the universal findVariable (isList=false)
-        let hpVar = findVariable(playerTarget, 'hp', false); 
+        let hpVar = findVariable(playerTarget, 'Player Health', false); 
         
         if (isGod) {
-            if (hpVar) hpVar.value = 99999;
-            updateStatus('**GOD MODE ACTIVATED!** Health set to max (99999).', ID_STATUS_GOD, 'status-active');
+            if (hpVar) hpVar.value = 99999999;
+            updateStatus('**GOD MODE ACTIVATED!** Health set to max (99999999).', ID_STATUS_GOD, 'status-active');
         } else {
             if (hpVar) hpVar.value = 10;
             updateStatus('**God Mode Deactivated.** Health reset to default (10).', ID_STATUS_GOD, 'status-ready');
