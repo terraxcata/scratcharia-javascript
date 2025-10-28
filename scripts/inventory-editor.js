@@ -227,7 +227,7 @@ window.saveInventory = function() {
 
     currentListVar.value = newContent;
 
-    updateStatus(`Successfully saved ${newContent.length / 2} pairs. Changes applied **instantly** to the live VM data.`, 'status-active');
+    updateStatus(`Successfully saved ${newContent.length / 2} pairs to the VM.`, 'status-active');
 };
 
 window.addItemRow = function() {
@@ -537,11 +537,11 @@ function injectControlPanel() {
         `<option value="${t.id}" ${t.name.includes("Stage") ? 'selected' : ''}>${t.name}</option>`
     ).join('');
 
-    const initialStatus = 'Ready to edit live list data.';
+    const initialStatus = 'Ready to edit list data.';
 
     const html = `
         <div id="${ID_HEADER}">
-            <span>Inventory/List Editor</span>
+            <span>Inventory Editor</span>
             <button class="minimize-btn" onclick="toggleMinimize()">—</button>
         </div>
         <div id="${ID_CONTENT}">
