@@ -3,12 +3,13 @@
 
     // --- CONFIGURATION ---
     const TARGET_LIST_NAME = '_Level';
+    const TARGET_SPRITE_NAME = 'Tiles';
     const CHECK_INTERVAL_MS = 50;
-    // --- REPLACEMENTS ---
-    const REPLACEMENTS = [
-        { find: '23', replace: '42' }, // example 1
-        { find: '21', replace: '41' }, // example 2
-        { find: '24', replace: '43' } // example 3
+
+    // --- BATCH REPLACEMENTS --
+    const NAME_REPLACEMENTS = [
+        { findName: 'grass', replaceName: 'chocolate_top' }, // example 1
+        { findName: 'dirt', replaceName: 'chocolate' } // example 2
     ];
     // --------------------------
 
@@ -16,7 +17,24 @@
     let loadingElement = null;
     let loadingDotsInterval = null;
 
+     // Finding the Scratch VM Target (sprite or stage) by its name.
+    function findTargetByName(vm, targetName) {
+        if (!vm || !vm.runtime) return null;
+        return vm.runtime.targets.find(t => t.getName() === targetName);
+    }
+
+     // Finding the 1-based costume index (as a string) from a sprite target and costume name.
+    function findCostumeIndexByName(spriteTarget, name) {
+        if (!spriteTarget || !spriteTarget.sprite) return null;
+        // Scratch costume indices are 1-based in the VM list data
+        const index = spriteTarget.sprite.costumes.findIndex(c => c.name === name);
+        // Returning 1-indexed number as a string, or null if not found
+        return index !== -1 ? String(index + 1) : null;
+    }
+
+
     // Finding the target list variable on the Stage.
+  
     function findLevelList(vm) {
         if (!vm || !vm.runtime) return null;
         const stageTarget = vm.runtime.targets.find(t => t.isStage);
@@ -40,13 +58,12 @@
 
         const vm = window.vm;
         const stageTarget = vm.runtime.targets.find(t => t.isStage);
-        
         if (!stageTarget) return 0;
 
         let targetList = null;
         const variables = stageTarget.variables;
         
-        // Finding the list variable (name and type)
+        // Finding the list variable by name and type
         for (const varId in variables) {
             const currentVar = variables[varId];
             if (currentVar.name === listName && currentVar.type === 'list') {
@@ -75,11 +92,36 @@
         if (replacementCount > 0) {
             targetList.value = newData;
             console.log(`REPLACEMENT: Applying "${oldValue}" -> "${newValue}" ${replacementCount} time(s).`);
-        } else {
-            console.log(`No instances of "${oldValue}" found.`);
-        }
+        } 
 
         return replacementCount;
+    }
+
+    function processNameReplacements(vm) {
+        const tilesSprite = findTargetByName(vm, TARGET_SPRITE_NAME);
+        if (!tilesSprite) {
+            console.error(`Auto-Editor: Sprite "${TARGET_SPRITE_NAME}" not found. Stopping replacement.`);
+            return 0;
+        }
+
+        let totalReplacements = 0;
+
+        // Executing all replacements defined in the NAME_REPLACEMENTS array
+        NAME_REPLACEMENTS.forEach(rule => {
+            const findIndex = findCostumeIndexByName(tilesSprite, rule.findName);
+            const replaceIndex = findCostumeIndexByName(tilesSprite, rule.replaceName);
+
+            if (!findIndex || !replaceIndex) {
+                const missingName = !findIndex ? rule.findName : rule.replaceName;
+                console.warn(`Auto-Editor: Skipping rule. Costume name "${missingName}" not found in sprite "${TARGET_SPRITE_NAME}".`);
+                return;
+            }
+
+            // The list stores the index (as a string), so we use the indices here.
+            totalReplacements += replaceData(TARGET_LIST_NAME, findIndex, replaceIndex);
+        });
+
+        return totalReplacements;
     }
 
     function WL_createStatusElement() {
@@ -152,13 +194,9 @@
         const currentData = levelList.value;
 
         if (currentData.length > 0) {
-            console.log(`Auto-Editor: List "${TARGET_LIST_NAME}" is detecting with ${currentData.length} items. Applying batch rules.`);
+            console.log(`Auto-Editor: List "${TARGET_LIST_NAME}" is detecting with ${currentData.length} items. Applying name-based rules.`);
             
-            let totalReplacements = 0;
-            
-            REPLACEMENTS.forEach(rule => {
-                totalReplacements += replaceData(TARGET_LIST_NAME, rule.find, rule.replace);
-            });
+            const totalReplacements = processNameReplacements(window.vm);
 
             console.log(`Auto-Editor: SUCCESS! Total replacements made: ${totalReplacements}.`);
             
