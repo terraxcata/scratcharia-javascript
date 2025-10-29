@@ -43,7 +43,7 @@
 <body class="bg-gray-900 text-gray-100 p-4 font-sans min-h-screen flex flex-col items-center">
 
     <div class="max-w-5xl w-full">
-        <h1 class="text-3xl font-bold mb-6 text-blue-400">350x160 Tile Map Editor (Data Loaded)</h1>
+        <h1 class="text-3xl font-bold mb-6 text-blue-400">Scratcharia Map Editor</h1>
         
         <div class="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 flex flex-wrap justify-between items-center space-y-4 md:space-y-0">
             
@@ -113,15 +113,48 @@
 
         const EMPTY_BLOCK_FALLBACK = {
             id: 0,
-            costume_name: "empty",
-            label: "Empty",
-            mime_type: "image/png",
-            base64_image_data: "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAFVJREFUWEdjYBgFo2AUjIJRMApGATgDEzT/YNAA0kLgXg0D8n80wAg0D/L/0wCMAH6+BGAoGAWjYBSMGgAAMoYwB1iJk7IAAAAASUVORK5CYII="
+            costume_name: "air", 
+            label: "Air",
+            mime_type: null,
+            base64_image_data: null 
         };
+
+        function createTileStyles() {
+            const styleSheet = document.createElement('style');
+            styleSheet.id = 'tile-styles';
+            let css = '';
+
+            Object.keys(BLOCK_TYPES).map(Number).sort((a, b) => a - b).forEach(key => {
+                const block = BLOCK_TYPES[key];
+                const className = `block-${key}`;
+                
+                let blockCss = '';
+                
+                if (key === 0) {
+                    blockCss = 'background-image: none !important; background-color: transparent !important;';
+                } else if (block.base64_image_data) {
+                    const base64Mime = block.mime_type || 'image/png';
+                    blockCss = `
+                        background-image: url(data:${base64Mime};base64,${block.base64_image_data});
+                        background-size: 2px 2px;
+                        background-color: transparent !important;
+                    `;
+                } else {
+                    blockCss = 'background-image: none; background-color: #f87171 !important;';
+                }
+
+                css += `.tile.${className} { ${blockCss} }`;
+            });
+
+            styleSheet.textContent = css;
+            if (!document.getElementById('tile-styles')) {
+                document.head.appendChild(styleSheet);
+            }
+        }
 
         async function loadBlockData() {
             try {
-                statusMessage.textContent = `Fetching block definitions from ${EXTERNAL_BLOCK_DATA_URL}...`;
+                statusMessage.textContent = `Fetching block definitions...`;
                 
                 const response = await fetch(EXTERNAL_BLOCK_DATA_URL);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -129,7 +162,6 @@
                 const dataArray = await response.json();
                 
                 BLOCK_TYPES = {};
-                
                 BLOCK_TYPES[0] = EMPTY_BLOCK_FALLBACK;
                 
                 dataArray.forEach((block, index) => {
@@ -166,24 +198,18 @@
             if (!tileElement || !tileElement.classList.contains('tile')) return;
 
             const index = Number(tileElement.dataset.index);
+            const oldBlockValue = Number(tileElement.dataset.value);
             const newBlockValue = currentBlockType;
             
-            const type = BLOCK_TYPES[newBlockValue] || BLOCK_TYPES[0];
-            
-            const base64Mime = type.mime_type || 'image/png';
-            const base64Data = type.base64_image_data;
+            if (oldBlockValue === newBlockValue) return; 
 
-            if (base64Data) {
-                tileElement.style.backgroundImage = `url(data:${base64Mime};base64,${base64Data})`;
-                tileElement.style.backgroundSize = '2px 2px';
-                tileElement.style.backgroundColor = 'transparent';
-            } else {
-                tileElement.style.backgroundImage = 'none';
-                tileElement.style.backgroundColor = '#111827';
+            if (oldBlockValue !== undefined) {
+                tileElement.classList.remove(`block-${oldBlockValue}`);
             }
             
-            tileElement.dataset.value = newBlockValue;
+            tileElement.classList.add(`block-${newBlockValue}`);
             
+            tileElement.dataset.value = newBlockValue;
             mapData[index] = newBlockValue;
         }
 
@@ -206,6 +232,7 @@
 
         function renderMap(data) {
             mapContainer.innerHTML = ''; 
+            const fragment = document.createDocumentFragment(); 
 
             const grid = Array.from({ length: MAP_HEIGHT }, () => new Array(MAP_WIDTH).fill(0));
             let dataIndex = 0;
@@ -227,29 +254,19 @@
 
             finalMapData.forEach((value, index) => {
                 const blockId = value <= MAX_BLOCK_TYPE ? value : 0;
-                const type = BLOCK_TYPES[blockId] || BLOCK_TYPES[0];
-
+                
                 const tile = document.createElement('div');
-                tile.className = `tile`;
-                
-                const base64Mime = type.mime_type || 'image/png';
-                const base64Data = type.base64_image_data;
-                
-                if (base64Data) {
-                    tile.style.backgroundImage = `url(data:${base64Mime};base64,${base64Data})`;
-                    tile.style.backgroundSize = '2px 2px';
-                    tile.style.backgroundColor = 'transparent';
-                } else {
-                    tile.style.backgroundColor = '#111827'; 
-                }
+                tile.className = `tile block-${blockId}`; 
                 
                 tile.dataset.index = index;
                 tile.dataset.value = blockId;
                 
                 tile.addEventListener('mouseover', handleTileMouseOver);
                 
-                mapContainer.appendChild(tile);
+                fragment.appendChild(tile); 
             });
+
+            mapContainer.appendChild(fragment); 
         }
 
         function initBlockSelector() {
@@ -311,7 +328,7 @@
 
         function zoomIn() {
             if (currentZoomLevel < MAX_ZOOM) {
-                currentZoomLevel = Math.min(MAX_BLOCK_TYPE, currentZoomLevel + ZOOM_STEP);
+                currentZoomLevel = Math.min(MAX_ZOOM, currentZoomLevel + ZOOM_STEP); 
                 updateZoom();
             }
         }
@@ -393,6 +410,7 @@
         
         window.onload = async () => {
             await loadBlockData();
+            createTileStyles(); 
 
             fileInput.addEventListener('change', handleFileLoad);
             exportButton.addEventListener('click', handleExport);
@@ -404,7 +422,7 @@
             mapContainer.addEventListener('mouseleave', stopPainting);
 
             initBlockSelector();
-            renderMap(mapData);
+            renderMap(mapData); 
             updateZoom(); 
         };
 
