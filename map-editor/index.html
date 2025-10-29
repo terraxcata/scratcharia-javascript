@@ -8,10 +8,6 @@
     <style>
         #map-container {
             display: grid;
-            grid-template-columns: repeat(350, 2px); 
-            grid-template-rows: repeat(160, 2px);
-            width: 700px;
-            height: 320px; 
             overflow: auto;
             border: 1px solid #475569;
             transform-origin: top left;
@@ -45,9 +41,9 @@
     <div class="max-w-5xl w-full">
         <h1 class="text-3xl font-bold mb-6 text-blue-400">Scratcharia Map Editor</h1>
         
-        <div class="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 flex flex-wrap justify-between items-center space-y-4 md:space-y-0">
+        <div class="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 flex flex-wrap justify-between items-start space-y-4 md:space-y-0 md:space-x-4">
             
-            <div class="flex flex-col space-y-2 w-full md:w-1/3">
+            <div class="flex flex-col space-y-2 w-full md:w-1/4">
                 <h2 class="text-xl font-semibold text-blue-300">Block Selector</h2>
                 <select id="blockSelectorDropdown" class="p-3 border border-gray-600 rounded-lg bg-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 text-white cursor-pointer"></select>
                 <div id="current-block-preview" class="flex items-center mt-2 text-sm font-medium">
@@ -56,14 +52,25 @@
                 </div>
             </div>
             
-            <div class="flex items-center space-x-2 md:w-1/4 justify-center">
-                <span class="text-lg font-medium">Zoom:</span>
-                <button id="zoomOutButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold w-10 h-10 rounded-full text-xl shadow-md transition duration-200">-</button>
-                <span id="zoomLevelDisplay" class="text-xl font-bold text-blue-300 w-12 text-center">1.0x</span>
-                <button id="zoomInButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold w-10 h-10 rounded-full text-xl shadow-md transition duration-200">+</button>
+            <div class="flex flex-col space-y-2 w-full md:w-1/4">
+                <h2 class="text-xl font-semibold text-blue-300">Map Size (Tiles)</h2>
+                <p class="text-xs text-gray-400">Default: 350 (W) x 160 (H)</p>
+                <div class="flex space-x-2">
+                    <input type="number" id="mapWidthInput" value="350" min="1" max="1000" class="p-2 border border-gray-600 rounded-lg bg-gray-700 text-sm w-1/2" placeholder="Width">
+                    <input type="number" id="mapHeightInput" value="160" min="1" max="1000" class="p-2 border border-gray-600 rounded-lg bg-gray-700 text-sm w-1/2" placeholder="Height">
+                </div>
+                <button id="updateSizeButton" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-4 rounded-lg shadow-md transition duration-200">
+                    Update Map Size
+                </button>
+                <div class="flex items-center space-x-2 justify-center pt-2">
+                    <span class="text-lg font-medium">Zoom:</span>
+                    <button id="zoomOutButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold w-8 h-8 rounded-full text-xl shadow-md transition duration-200">-</button>
+                    <span id="zoomLevelDisplay" class="text-lg font-bold text-blue-300 w-10 text-center">1.0x</span>
+                    <button id="zoomInButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold w-8 h-8 rounded-full text-xl shadow-md transition duration-200">+</button>
+                </div>
             </div>
-            
-            <div class="flex flex-col space-y-2 w-full md:w-1/3">
+
+            <div class="flex flex-col space-y-2 w-full md:w-1/4">
                 <input type="file" id="fileInput" accept=".txt,.csv" class="p-2 border border-gray-600 rounded-lg bg-gray-700 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600">
                 <button id="exportButton" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200">
                     Export Map Data
@@ -77,23 +84,23 @@
                 <div id="map-container" class="transform origin-top-left">
                 </div>
             </div>
-            <p class="mt-4 text-sm text-gray-400">Map dimensions: 350 (W) x 160 (H) = 56,000 tiles.</p>
-            <p class="text-xs text-gray-500 mt-1">Data maps from the bottom-right tile (349, 159) backwards to the top-left.</p>
+            <p id="dimensionsDisplay" class="mt-4 text-sm text-gray-400">Map dimensions: 350 (W) x 160 (H) = 56,000 tiles.</p>
+            <p class="text-xs text-gray-500 mt-1">Data maps from the bottom-right tile backwards to the top-left.</p>
         </div>
 
     </div>
     
     <script>
-        const MAP_WIDTH = 350;
-        const MAP_HEIGHT = 160;
-        const TOTAL_TILES = MAP_WIDTH * MAP_HEIGHT;
+        let MAP_WIDTH = 350;
+        let MAP_HEIGHT = 160;
+        let TOTAL_TILES = 0;
         const ZOOM_STEP = 0.5;
         const MIN_ZOOM = 1.0;
         const MAX_ZOOM = 4.0;
         
         const EXTERNAL_BLOCK_DATA_URL = "https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/map-editor/extracted_costumes.json";
         
-        let mapData = new Array(TOTAL_TILES).fill(0); 
+        let mapData = []; 
         let currentBlockType = 0;
         let currentZoomLevel = MIN_ZOOM;
         let BLOCK_TYPES = {};
@@ -110,6 +117,10 @@
         const zoomInButton = document.getElementById('zoomInButton');
         const zoomOutButton = document.getElementById('zoomOutButton');
         const zoomLevelDisplay = document.getElementById('zoomLevelDisplay');
+        const mapWidthInput = document.getElementById('mapWidthInput');
+        const mapHeightInput = document.getElementById('mapHeightInput');
+        const dimensionsDisplay = document.getElementById('dimensionsDisplay');
+        const updateSizeButton = document.getElementById('updateSizeButton');
 
         const EMPTY_BLOCK_FALLBACK = {
             id: 0,
@@ -236,13 +247,23 @@
 
             const grid = Array.from({ length: MAP_HEIGHT }, () => new Array(MAP_WIDTH).fill(0));
             let dataIndex = 0;
-            for (let y = MAP_HEIGHT - 1; y >= 0; y--) {
-                for (let x = MAP_WIDTH - 1; x >= 0; x--) {
-                    const tileValue = (dataIndex < data.length) ? (data[dataIndex] || 0) : 0;
-                    grid[y][x] = tileValue;
-                    dataIndex++;
+            
+            if (data.length === TOTAL_TILES) {
+                for (let y = MAP_HEIGHT - 1; y >= 0; y--) {
+                    for (let x = MAP_WIDTH - 1; x >= 0; x--) {
+                        const tileValue = (dataIndex < data.length) ? (data[dataIndex] || 0) : 0;
+                        grid[y][x] = tileValue;
+                        dataIndex++;
+                    }
+                }
+            } else {
+                for (let y = 0; y < MAP_HEIGHT; y++) {
+                    for (let x = 0; x < MAP_WIDTH; x++) {
+                        grid[y][x] = 0;
+                    }
                 }
             }
+
 
             const finalMapData = [];
             for (let y = 0; y < MAP_HEIGHT; y++) {
@@ -302,7 +323,7 @@
                 currentBlockIcon.style.backgroundSize = '100% 100%';
                 currentBlockIcon.style.backgroundColor = 'transparent';
             } else {
-                currentBlockIcon.innerHTML = '◻️';
+                currentBlockIcon.innerHTML = '';
                 currentBlockIcon.style.backgroundImage = 'none';
                 currentBlockIcon.style.backgroundColor = 'transparent';
             }
@@ -314,11 +335,14 @@
             mapContainer.style.transform = `scale(${currentZoomLevel})`;
             zoomLevelDisplay.textContent = `${currentZoomLevel.toFixed(1)}x`;
 
-            const scaledWidth = 700 * currentZoomLevel;
-            const scaledHeight = 320 * currentZoomLevel;
+            const baseWidthPx = MAP_WIDTH * 2;
+            const baseHeightPx = MAP_HEIGHT * 2;
 
-            document.getElementById('map-wrapper').style.width = currentZoomLevel > MIN_ZOOM ? `${scaledWidth + 4}px` : '704px';
-            document.getElementById('map-wrapper').style.height = currentZoomLevel > MIN_ZOOM ? `${scaledHeight + 4}px` : '324px';
+            const scaledWidth = baseWidthPx * currentZoomLevel;
+            const scaledHeight = baseHeightPx * currentZoomLevel;
+            
+            document.getElementById('map-wrapper').style.width = currentZoomLevel > MIN_ZOOM ? `${scaledWidth + 4}px` : `${baseWidthPx + 4}px`;
+            document.getElementById('map-wrapper').style.height = currentZoomLevel > MIN_ZOOM ? `${scaledHeight + 4}px` : `${baseHeightPx + 4}px`;
 
             zoomOutButton.disabled = currentZoomLevel <= MIN_ZOOM;
             zoomInButton.disabled = currentZoomLevel >= MAX_ZOOM;
@@ -340,6 +364,79 @@
             }
         }
 
+        function initializeMap() {
+            MAP_WIDTH = parseInt(mapWidthInput.value) || 350;
+            MAP_HEIGHT = parseInt(mapHeightInput.value) || 160;
+
+            MAP_WIDTH = Math.max(1, Math.min(1000, MAP_WIDTH));
+            MAP_HEIGHT = Math.max(1, Math.min(1000, MAP_HEIGHT));
+            
+            mapWidthInput.value = MAP_WIDTH;
+            mapHeightInput.value = MAP_HEIGHT;
+
+            TOTAL_TILES = MAP_WIDTH * MAP_HEIGHT;
+
+            mapContainer.style.gridTemplateColumns = `repeat(${MAP_WIDTH}, 2px)`;
+            mapContainer.style.gridTemplateRows = `repeat(${MAP_HEIGHT}, 2px)`;
+            mapContainer.style.width = `${MAP_WIDTH * 2}px`;
+            mapContainer.style.height = `${MAP_HEIGHT * 2}px`;
+
+            mapData = new Array(TOTAL_TILES).fill(0);
+            
+            dimensionsDisplay.textContent = `Map dimensions: ${MAP_WIDTH} (W) x ${MAP_HEIGHT} (H) = ${TOTAL_TILES.toLocaleString()} tiles.`;
+            
+            renderMap(mapData);
+            updateZoom();
+        }
+
+        function updateDimensions() {
+            const oldWidth = MAP_WIDTH;
+            const oldHeight = MAP_HEIGHT;
+            
+            const newWidth = Math.max(1, Math.min(1000, parseInt(mapWidthInput.value) || 350));
+            const newHeight = Math.max(1, Math.min(1000, parseInt(mapHeightInput.value) || 160));
+            
+            if (newWidth === oldWidth && newHeight === oldHeight) return;
+
+            const oldMapData = [...mapData];
+            
+            MAP_WIDTH = newWidth;
+            MAP_HEIGHT = newHeight;
+            TOTAL_TILES = MAP_WIDTH * MAP_HEIGHT;
+
+            mapWidthInput.value = MAP_WIDTH;
+            mapHeightInput.value = MAP_HEIGHT;
+
+            const newMapData = new Array(TOTAL_TILES).fill(0);
+
+            const widthLimit = Math.min(oldWidth, newWidth);
+            const heightLimit = Math.min(oldHeight, newHeight);
+
+            for (let y = 0; y < heightLimit; y++) {
+                for (let x = 0; x < widthLimit; x++) {
+                    const oldIndex = y * oldWidth + x;
+                    const newIndex = y * newWidth + x;
+                    
+                    if (oldIndex < oldMapData.length && newIndex < newMapData.length) {
+                         newMapData[newIndex] = oldMapData[oldIndex];
+                    }
+                }
+            }
+            
+            mapContainer.style.gridTemplateColumns = `repeat(${MAP_WIDTH}, 2px)`;
+            mapContainer.style.gridTemplateRows = `repeat(${MAP_HEIGHT}, 2px)`;
+            mapContainer.style.width = `${MAP_WIDTH * 2}px`;
+            mapContainer.style.height = `${MAP_HEIGHT * 2}px`;
+
+            dimensionsDisplay.textContent = `Map dimensions: ${MAP_WIDTH} (W) x ${MAP_HEIGHT} (H) = ${TOTAL_TILES.toLocaleString()} tiles.`;
+            
+            renderMap(newMapData);
+            updateZoom();
+
+            statusMessage.textContent = 'Map Updated.';
+            setTimeout(() => statusMessage.textContent = '', 4000);
+        }
+
         function handleFileLoad(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -353,6 +450,10 @@
                         .filter(s => s.length > 0)
                         .map(Number);
                     
+                    if (rawValues.length !== TOTAL_TILES) {
+                        statusMessage.textContent = `Warning: Loaded ${rawValues.length} values, expected ${TOTAL_TILES}. Map data will be partially loaded or truncated.`;
+                    }
+                    
                     const validData = rawValues.map(v => {
                         const clamped = Math.min(Math.max(0, v), MAX_BLOCK_TYPE);
                         return isNaN(v) ? 0 : clamped;
@@ -364,10 +465,10 @@
                         return;
                     }
 
-                    statusMessage.textContent = `Loaded ${validData.length} values. Mapping to 350x160 grid (BR to TL).`;
+                    renderMap(validData);
+                    statusMessage.textContent = `Map data loaded successfully!`;
                     setTimeout(() => statusMessage.textContent = '', 4000);
                     
-                    renderMap(validData);
 
                 } catch (error) {
                     statusMessage.textContent = 'Error processing file data.';
@@ -398,7 +499,7 @@
             
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'map_data.csv';
+            a.download = `map_data_${MAP_WIDTH}x${MAP_HEIGHT}.csv`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -409,8 +510,7 @@
         }
         
         window.onload = async () => {
-            await loadBlockData();
-            createTileStyles(); 
+            updateSizeButton.addEventListener('click', updateDimensions);
 
             fileInput.addEventListener('change', handleFileLoad);
             exportButton.addEventListener('click', handleExport);
@@ -421,9 +521,11 @@
             document.addEventListener('mouseup', stopPainting);
             mapContainer.addEventListener('mouseleave', stopPainting);
 
+            await loadBlockData();
+            createTileStyles(); 
+
+            initializeMap();
             initBlockSelector();
-            renderMap(mapData); 
-            updateZoom(); 
         };
 
     </script>
