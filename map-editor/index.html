@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>350x160 Map Editor with Scalable Selector</title>
+    <title>Scratcharia Map Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles to handle the large grid and small tiles */
         #map-container {
             display: grid;
-            /* Sets up a 350-column grid, using 2px per column initially */
             grid-template-columns: repeat(350, 2px); 
             grid-template-rows: repeat(160, 2px);
-            width: 700px; /* 350 * 2px */
-            height: 320px; /* 160 * 2px */
-            overflow: auto; /* Enable scrolling for large map */
-            border: 1px solid #475569; /* Slate border */
+            width: 700px;
+            height: 320px; 
+            overflow: auto;
+            border: 1px solid #475569;
             
             /* Zoom properties */
             transform-origin: top left;
@@ -27,9 +25,7 @@
             box-sizing: border-box;
             cursor: pointer;
             transition: background-color 0.1s;
-            /* In a real scenario, you'd use background-image for Base64 symbols */
         }
-        /* Custom scrollbar for better visibility */
         #map-container::-webkit-scrollbar { width: 8px; height: 8px; }
         #map-container::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
         #map-container::-webkit-scrollbar-track { background: #1e293b; }
@@ -51,10 +47,8 @@
     <div class="max-w-5xl w-full">
         <h1 class="text-3xl font-bold mb-6 text-blue-400">350x160 Tile Map Editor (Data Loaded)</h1>
         
-        <!-- Controls Panel -->
         <div class="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 flex flex-wrap justify-between items-center space-y-4 md:space-y-0">
             
-            <!-- Block Selector (Dropdown) -->
             <div class="flex flex-col space-y-2 w-full md:w-1/3">
                 <h2 class="text-xl font-semibold text-blue-300">Block Selector</h2>
                 <select id="blockSelectorDropdown" class="p-3 border border-gray-600 rounded-lg bg-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 text-white cursor-pointer"></select>
@@ -64,7 +58,6 @@
                 </div>
             </div>
             
-            <!-- Zoom Controls -->
             <div class="flex items-center space-x-2 md:w-1/4 justify-center">
                 <span class="text-lg font-medium">Zoom:</span>
                 <button id="zoomOutButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold w-10 h-10 rounded-full text-xl shadow-md transition duration-200">-</button>
@@ -72,7 +65,6 @@
                 <button id="zoomInButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold w-10 h-10 rounded-full text-xl shadow-md transition duration-200">+</button>
             </div>
             
-            <!-- File Load/Export -->
             <div class="flex flex-col space-y-2 w-full md:w-1/3">
                 <input type="file" id="fileInput" accept=".txt,.csv" class="p-2 border border-gray-600 rounded-lg bg-gray-700 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600">
                 <button id="exportButton" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200">
@@ -81,12 +73,10 @@
             </div>
         </div>
         
-        <!-- Map and Status -->
         <div class="flex flex-col items-center">
             <div id="status-message" class="text-red-400 mb-2 h-6"></div>
             <div id="map-wrapper" class="p-2 bg-gray-700 rounded-xl shadow-inner">
                 <div id="map-container" class="transform origin-top-left">
-                    <!-- Tiles will be appended here -->
                 </div>
             </div>
             <p class="mt-4 text-sm text-gray-400">Map dimensions: 350 (W) x 160 (H) = 56,000 tiles.</p>
@@ -96,10 +86,6 @@
     </div>
 
     <!-- 
-        *** SIMULATED EXTERNAL DATABASE RESPONSE ***
-        This script tag contains the JSON data that a real external API would return. 
-        In your actual deployment, you would remove this and rely on the real URL.
-    -->
     <script id="block-data-json" type="application/json">
         {
             "0": { "label": "Empty", "color": "bg-gray-900", "tile": "#111827", "symbol": "◻️" },
@@ -112,10 +98,10 @@
             "7": { "label": "Lava Flow", "color": "bg-red-800", "tile": "#991b1b", "symbol": "🌋" },
             "8": { "label": "Ice Floor", "color": "bg-cyan-200", "tile": "#a5f3fc", "symbol": "🧊" },
             "9": { "label": "Mossy Brick", "color": "bg-green-700", "tile": "#047857", "symbol": "🌿" }
-            <!-- Mock blocks -->
         }
     </script>
-
+    -->
+    
     <script>
         // --- CONFIGURATION ---
         const MAP_WIDTH = 350;
@@ -125,16 +111,12 @@
         const MIN_ZOOM = 1.0;
         const MAX_ZOOM = 4.0;
         
-        // ** PLACEHOLDER URL for your external JSON database **
-        // When you deploy your actual API, replace this link. The JSON format 
-        // should match the structure inside the script tag below.
         const EXTERNAL_BLOCK_DATA_URL = "https://your-api.com/v1/map_blocks.json";
         
-        // --- STATE ---
         let mapData = new Array(TOTAL_TILES).fill(0); 
         let currentBlockType = 0;
         let currentZoomLevel = MIN_ZOOM;
-        let BLOCK_TYPES = {}; // This will be populated from the "database"
+        let BLOCK_TYPES = {};
         let MAX_BLOCK_TYPE = 0;
 
         // --- DOM REFERENCES ---
