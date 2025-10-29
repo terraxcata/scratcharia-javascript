@@ -71,6 +71,11 @@
             </div>
 
             <div class="flex flex-col space-y-2 w-full md:w-1/4">
+                <h2 class="text-xl font-semibold text-blue-300">Block Data Source</h2>
+                <input type="text" id="customBlockUrlInput" placeholder="Enter block data JSON URL" value="https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/map-editor/extracted_costumes.json" class="p-2 border border-gray-600 rounded-lg bg-gray-700 text-sm w-full">
+                <button id="loadCustomBlocksButton" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-1 px-4 rounded-lg shadow-md transition duration-200 w-full">
+                    Load Blocks from URL
+                </button>
                 <input type="file" id="fileInput" accept=".txt,.csv" class="p-2 border border-gray-600 rounded-lg bg-gray-700 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600">
                 <button id="exportButton" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200">
                     Export Map Data
@@ -98,8 +103,6 @@
         const MIN_ZOOM = 1.0;
         const MAX_ZOOM = 4.0;
         
-        const EXTERNAL_BLOCK_DATA_URL = "https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/map-editor/extracted_costumes.json";
-        
         let mapData = []; 
         let currentBlockType = 0;
         let currentZoomLevel = MIN_ZOOM;
@@ -121,6 +124,8 @@
         const mapHeightInput = document.getElementById('mapHeightInput');
         const dimensionsDisplay = document.getElementById('dimensionsDisplay');
         const updateSizeButton = document.getElementById('updateSizeButton');
+        const customBlockUrlInput = document.getElementById('customBlockUrlInput');
+        const loadCustomBlocksButton = document.getElementById('loadCustomBlocksButton');
 
         const EMPTY_BLOCK_FALLBACK = {
             id: 0,
@@ -131,7 +136,7 @@
         };
 
         function createTileStyles() {
-            const styleSheet = document.createElement('style');
+            const styleSheet = document.getElementById('tile-styles') || document.createElement('style');
             styleSheet.id = 'tile-styles';
             let css = '';
 
@@ -163,46 +168,76 @@
             }
         }
 
-        async function loadBlockData() {
+        async function fetchAndProcessBlockData(url, sourceName) {
             try {
-                statusMessage.textContent = `Fetching block definitions...`;
+                statusMessage.textContent = `Fetching block definitions from ${sourceName}...`;
                 
-                const response = await fetch(EXTERNAL_BLOCK_DATA_URL);
+                const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const dataArray = await response.json();
                 
-                BLOCK_TYPES = {};
-                BLOCK_TYPES[0] = EMPTY_BLOCK_FALLBACK;
+                // Check if this is the initial default load
+                const isInitialLoad = sourceName === 'default source'; 
                 
-                dataArray.forEach((block, index) => {
-                    const id = index + 1; 
-                    BLOCK_TYPES[id] = { 
-                        id: id,
+                if (isInitialLoad) {
+                    // For the initial load, we clear the list and ensure block 0 (Air) is present.
+                    BLOCK_TYPES = {};
+                    BLOCK_TYPES[0] = EMPTY_BLOCK_FALLBACK;
+                }
+                
+                // Determine the starting ID for the new blocks. 
+                // If initial load, start at 1. Otherwise, start after the current max block type.
+                let currentId = isInitialLoad ? 1 : MAX_BLOCK_TYPE + 1; 
+                
+                dataArray.forEach((block) => {
+                    BLOCK_TYPES[currentId] = { 
+                        id: currentId,
                         label: block.costume_name, 
                         ...block 
                     };
+                    currentId++;
                 });
                 
-                MAX_BLOCK_TYPE = dataArray.length;
+                // Update MAX_BLOCK_TYPE to the last assigned ID (currentId will be one past the last ID)
+                MAX_BLOCK_TYPE = currentId - 1; 
                 
-                statusMessage.textContent = `Successfully loaded ${Object.keys(BLOCK_TYPES).length} block definitions.`;
+                createTileStyles();
+                initBlockSelector();
+                
+                statusMessage.textContent = `Successfully loaded and added ${dataArray.length} block definitions from ${sourceName}. Total blocks: ${MAX_BLOCK_TYPE}.`;
                 setTimeout(() => statusMessage.textContent = '', 3000);
                 
                 return BLOCK_TYPES;
 
             } catch (error) {
-                const errorMessage = `Error loading block data: ${error.message}. Using default minimum set.`;
+                const errorMessage = `Error loading block data from ${sourceName}: ${error.message}.`;
                 statusMessage.textContent = errorMessage;
                 console.error(errorMessage, error);
                 
-                BLOCK_TYPES = {
-                    0: EMPTY_BLOCK_FALLBACK,
-                    1: { id: 1, label: 'Error Block', costume_name: 'error', mime_type: 'image/png', base64_image_data: "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAKklEQVR42u3BAQEAAAABIP6fOpgAEAAAAAAAAAAAAAAAAAAAAAF+jYABg2fN+hAAAAABJRU5ErkJggg==" }
-                };
-                MAX_BLOCK_TYPE = 1;
+                // Fallback logic remains, ensuring at least block 0 and 1 exist if the load fails completely.
+                if (Object.keys(BLOCK_TYPES).length <= 1) {
+                    BLOCK_TYPES = {
+                        0: EMPTY_BLOCK_FALLBACK,
+                        1: { id: 1, label: 'Error Block', costume_name: 'error', mime_type: 'image/png', base64_image_data: "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAKklEQVR42u3BAQEAAAABIP6fOpgAEAAAAAAAAAAAAAAAAAAAAAF+jYABg2fN+hAAAAABJRU5ErkJggg==" }
+                    };
+                    MAX_BLOCK_TYPE = 1;
+                    createTileStyles();
+                    initBlockSelector();
+                }
                 return BLOCK_TYPES;
             }
+        }
+
+        function loadCustomBlocks() {
+            const url = customBlockUrlInput.value.trim();
+            if (!url) {
+                statusMessage.textContent = 'Please enter a valid URL.';
+                setTimeout(() => statusMessage.textContent = '', 3000);
+                return;
+            }
+            // Use 'custom URL' as the source name to trigger the appending behavior
+            fetchAndProcessBlockData(url, 'custom URL'); 
         }
 
         function paintTile(tileElement) {
@@ -510,6 +545,7 @@
         }
         
         window.onload = async () => {
+            loadCustomBlocksButton.addEventListener('click', loadCustomBlocks);
             updateSizeButton.addEventListener('click', updateDimensions);
 
             fileInput.addEventListener('change', handleFileLoad);
@@ -521,11 +557,10 @@
             document.addEventListener('mouseup', stopPainting);
             mapContainer.addEventListener('mouseleave', stopPainting);
 
-            await loadBlockData();
-            createTileStyles(); 
+            // Initial load uses 'default source' flag to reset the block list
+            await fetchAndProcessBlockData(customBlockUrlInput.value, 'default source');
 
             initializeMap();
-            initBlockSelector();
         };
 
     </script>
