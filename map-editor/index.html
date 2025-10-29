@@ -323,7 +323,7 @@
                 currentBlockIcon.style.backgroundSize = '100% 100%';
                 currentBlockIcon.style.backgroundColor = 'transparent';
             } else {
-                currentBlockIcon.innerHTML = '';
+                currentBlockIcon.innerHTML = '◻️';
                 currentBlockIcon.style.backgroundImage = 'none';
                 currentBlockIcon.style.backgroundColor = 'transparent';
             }
@@ -492,14 +492,14 @@
             });
 
             const outputData = grid.map(item => item.value);
-            const csvContent = outputData.join(',');
+            const textContent = outputData.join('\n');
             
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             
             const a = document.createElement('a');
             a.href = url;
-            a.download = `map_data_${MAP_WIDTH}x${MAP_HEIGHT}.csv`;
+            a.download = `map_data_${MAP_WIDTH}x${MAP_HEIGHT}.txt`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
