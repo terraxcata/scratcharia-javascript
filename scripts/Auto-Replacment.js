@@ -1,22 +1,89 @@
 (function() {
     'use strict';
 
+    // --- CONFIGURATION ---
     const TARGET_LIST_NAME = '_Level';
-    const CHECK_INTERVAL_MS = 1000; 
-    
-    const REPLACEMENT_MAP = {
-        '23': '42',
-        '21': '41',
-        '24': '42'
-    };
+    const CHECK_INTERVAL_MS = 50;
+    // --- REPLACEMENTS ---
+    const REPLACEMENTS = [
+        { find: '23', replace: '42' }, // example 1
+        { find: '21', replace: '41' }, // example 2
+        { find: '24', replace: '43' } // example 3
+    ];
+    // --------------------------
 
-    let intervalId;
+    let intervalId = null;
     let loadingElement = null;
     let loadingDotsInterval = null;
 
+    // Finding the target list variable on the Stage.
+    function findLevelList(vm) {
+        if (!vm || !vm.runtime) return null;
+        const stageTarget = vm.runtime.targets.find(t => t.isStage);
+        if (!stageTarget) return null;
+
+        const variables = stageTarget.variables;
+        for (const varId in variables) {
+            const currentVar = variables[varId];
+            if (currentVar.name === TARGET_LIST_NAME && currentVar.type === 'list') {
+                return currentVar;
+            }
+        }
+        return null;
+    }
+
+    function replaceData(listName, oldValue, newValue) {
+        if (typeof window.vm === 'undefined' || !window.vm.runtime) {
+            console.error("Scratch VM not available. Cannot perform replacement.");
+            return 0;
+        }
+
+        const vm = window.vm;
+        const stageTarget = vm.runtime.targets.find(t => t.isStage);
+        
+        if (!stageTarget) return 0;
+
+        let targetList = null;
+        const variables = stageTarget.variables;
+        
+        // Finding the list variable (name and type)
+        for (const varId in variables) {
+            const currentVar = variables[varId];
+            if (currentVar.name === listName && currentVar.type === 'list') {
+                targetList = currentVar;
+                break;
+            }
+        }
+
+        if (!targetList) return 0;
+
+        const currentData = targetList.value;
+        let replacementCount = 0;
+        const stringifiedOldValue = String(oldValue);
+        const stringifiedNewValue = String(newValue);
+
+        // Iterating and replacing
+        const newData = currentData.map(item => {
+            if (String(item) === stringifiedOldValue) {
+                replacementCount++;
+                return stringifiedNewValue;
+            }
+            return item;
+        });
+
+        // Applying the updated data back to the VM
+        if (replacementCount > 0) {
+            targetList.value = newData;
+            console.log(`REPLACEMENT: Applying "${oldValue}" -> "${newValue}" ${replacementCount} time(s).`);
+        } else {
+            console.log(`No instances of "${oldValue}" found.`);
+        }
+
+        return replacementCount;
+    }
+
     function WL_createStatusElement() {
         if (document.getElementById('wl-status-indicator')) return;
-
         loadingElement = document.createElement('div');
         loadingElement.id = 'wl-status-indicator';
         loadingElement.style.cssText = `
@@ -37,13 +104,14 @@
 
     function WL_updateLoadingIndicator(dots) {
         if (loadingElement) {
-            loadingElement.textContent = `Loading${dots}`;
+            loadingElement.textContent = `Monitoring${dots}`;
         }
     }
 
     function WL_startLoadingAnimation() {
         WL_createStatusElement();
         let dotCount = 0;
+        if (loadingDotsInterval) clearInterval(loadingDotsInterval);
         loadingDotsInterval = setInterval(() => {
             dotCount = (dotCount % 3) + 1;
             const dots = '.'.repeat(dotCount);
@@ -67,78 +135,45 @@
                     loadingElement.remove();
                     loadingElement = null;
                 }, 500);
-            }, 2000); 
+            }, 2000); 
         }
     }
 
-    function WL_findLevelList(vm) {
-        if (!vm || !vm.runtime || vm.runtime.targets.length === 0) {
-            return null;
-        }
-
-        const stageTarget = vm.runtime.targets.find(t => t.isStage);
-        if (!stageTarget) return null;
-
-        const variables = stageTarget.variables;
-        for (const varId in variables) {
-            const currentVar = variables[varId];
-            if (currentVar.name === TARGET_LIST_NAME && currentVar.type === 'list') {
-                return currentVar;
-            }
-        }
-        return null;
-    }
-
-    function WL_checkAndReplace() {
+    function WL_monitorAndReplace() {
         if (typeof window.vm === 'undefined' || !window.vm.runtime) {
-            console.log("World Data Auto-Editor: Scratch VM not ready. Retrying in 1s.");
             return;
         }
 
-        const levelList = WL_findLevelList(window.vm);
-        
+        const levelList = findLevelList(window.vm);
         if (!levelList) {
-            console.log(`World Data Auto-Editor: List "${TARGET_LIST_NAME}" not found on Stage. Retrying in 1s.`);
             return;
         }
 
         const currentData = levelList.value;
 
         if (currentData.length > 0) {
-            console.log(`World Data Auto-Editor: List "${TARGET_LIST_NAME}" detected with ${currentData.length} items. Starting silent replacement.`);
+            console.log(`Auto-Editor: List "${TARGET_LIST_NAME}" is detecting with ${currentData.length} items. Applying batch rules.`);
             
-            let totalReplaceCount = 0;
-            const newData = [];
+            let totalReplacements = 0;
+            
+            REPLACEMENTS.forEach(rule => {
+                totalReplacements += replaceData(TARGET_LIST_NAME, rule.find, rule.replace);
+            });
 
-            for (let i = 0; i < currentData.length; i++) {
-                let item = String(currentData[i]);
-                
-                if (REPLACEMENT_MAP.hasOwnProperty(item)) {
-                    newData.push(REPLACEMENT_MAP[item]);
-                    totalReplaceCount++;
-                } else {
-                    newData.push(item);
-                }
-            }
-
-            if (totalReplaceCount > 0) {
-                levelList.value = newData;
-                console.log(`World Data Auto-Editor: SUCCESS! Performed ${totalReplaceCount} total replacements across all rules.`);
-            } else {
-                console.log("World Data Auto-Editor: SUCCESS! List populated, but no matches found for defined replacement rules.");
-            }
+            console.log(`Auto-Editor: SUCCESS! Total replacements made: ${totalReplacements}.`);
             
             clearInterval(intervalId);
             WL_stopLoadingAnimation("Loaded");
-            console.log("World Data Auto-Editor: Script execution complete and stopped.");
+            console.log("Auto-Editor: Script is complete and monitoring is stopping.");
         } else {
             if (!loadingElement) {
                 WL_startLoadingAnimation();
             }
-            console.log(`World Data Auto-Editor: List "${TARGET_LIST_NAME}" found on Stage, but is empty. Waiting...`);
         }
     }
 
-    intervalId = setInterval(WL_checkAndReplace, CHECK_INTERVAL_MS);
+    window.replaceData = replaceData;
+    intervalId = setInterval(WL_monitorAndReplace, CHECK_INTERVAL_MS);
     WL_startLoadingAnimation();
+
 })();
