@@ -1,0 +1,1946 @@
+[
+  {
+    "costume_name": "grass",
+    "asset_id": "999a77dc64a8c4c37e29d2d26ad45737",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "dirt",
+    "asset_id": "85c0fe775a65f8d4272fc329073dc613",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree1",
+    "asset_id": "044f7524b81dc340011b92166b227ab3",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree2",
+    "asset_id": "b9ef48185a94cbf108f6748fe0b8f8bc",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree10",
+    "asset_id": "b34c1a812b0d2a7a77a5dbf659a38d5e",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree11",
+    "asset_id": "1bdd4a9310dbffc1cc1b8d96fc8a3596",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree12",
+    "asset_id": "78a9cea1747bc7b095cdfcb952a7a3bd",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree1i3",
+    "asset_id": "7ccbea4943ce2d48fcd4a1f50491c9d9",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree14",
+    "asset_id": "89ec1473da8832d3162c819a7a55a4ea",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree20",
+    "asset_id": "cf5fb8545664b66b10a22e3e95bbeff2",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree21",
+    "asset_id": "a008b73290df48bdd642503c72f27dff",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree22",
+    "asset_id": "45eae168ce2422b57d8744af14c620cc",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree30",
+    "asset_id": "3374b869244f880c19c19bc1d9dfdd15",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree31",
+    "asset_id": "c18b1620d7c3e6fbd88a26ed9ac1d72f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree32",
+    "asset_id": "689c644a40ae0fd79ddfe08b3a2409ae",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree40",
+    "asset_id": "eabe692d80ef8f051de304b6f7097575",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree41",
+    "asset_id": "f0025dc271a77c7167b65256b2ba329f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree42",
+    "asset_id": "5828335f81b5a99028f91769c4a6e156",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "tree50",
+    "asset_id": "e99ef984eb5bf2e4f38c222a597b3699",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "stone",
+    "asset_id": "b1404d2ce1202a401f36e6a099794f65",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "stone2",
+    "asset_id": "43ae2019898d42c071aab7effff526d8",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_Pickaxe",
+    "asset_id": "5ccbea0f874664d49b44b67cb0897cd5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_Axe",
+    "asset_id": "8a3de2f9955f6a17be0d6fdcd482e63d",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "wood2_top",
+    "asset_id": "80654e0d9c4df06235296d92750c4f67",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "wood2",
+    "asset_id": "8bb2ffb3c27ff6894c690fd3a108c7f4",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sand_top",
+    "asset_id": "976bc9c0a37d724a029f6cdc4d305b68",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sand",
+    "asset_id": "c8c333cec04d6744ff9afe5fd2dcc5b7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "iron_top",
+    "asset_id": "2f8e97a479e4d647836698e32876cc74",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "iron",
+    "asset_id": "c78e498cfc37a4ec2b2b0f282eaaeb6d",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Bed_item",
+    "asset_id": "e681dedca85199b201c5a4a79c6bb5f6",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Acorn",
+    "asset_id": "94d7603239dbc1fd7a754aca99a94cd7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sapling",
+    "asset_id": "036761fb86f00fd046294f258917a747",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door-closed",
+    "asset_id": "922ee80d60ea66f5edc3f5bd2f4f999b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door-closed2",
+    "asset_id": "d7782ccce3484fc72a7ca41190b9de30",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door",
+    "asset_id": "d80b3c5b4f9b385000b06974fbe5ebd7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Platform",
+    "asset_id": "2312ad91f2dad4a34958ea0ac8f0236b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Work_Bench",
+    "asset_id": "1c7a1d7d38f1d9d7b4d3227f197beb40",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Furnace",
+    "asset_id": "b1c8817a8a273e2a34cfc2d289dc5dfb",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_Bar",
+    "asset_id": "b2ddf5a3b334d557932f4cd51ce5c799",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_wall",
+    "asset_id": "2586ca49309954bb371ecd6d41bc2d32",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Stone-Wall-Top",
+    "asset_id": "0d0275d6b50e583d2d3b74ae4557abe8",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Stone-Wall",
+    "asset_id": "a23e76e4e521a80d07429f819e74a1bd",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bed_a",
+    "asset_id": "9123c9b572f4d69bd49308b818b65895",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bed_b",
+    "asset_id": "985eb6ec935f5b12866f47ab8cf0da7e",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chair_left",
+    "asset_id": "4eb4a45670bcf59d0b6c79f850082d84",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chair_right",
+    "asset_id": "f4a5dc82a52116edb343a4f28e14608c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "torch",
+    "asset_id": "9d710f2e694d204fdf35678850653beb",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "torch_left",
+    "asset_id": "06b1b29e3307a2017bf30c8cf2d17412",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "torch_right",
+    "asset_id": "942de10e0f4b9230c288a14b5b0d9461",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "SandBrick_top",
+    "asset_id": "10c4baf94acdb92667e169de65b5bd18",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "SandBrick",
+    "asset_id": "db26b75db48d7ab59afb04ad81e8300e",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chandelier",
+    "asset_id": "8340a207fe7b19bfaced26c0b55174ef",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Bench1",
+    "asset_id": "df4fc9a34598d1ef97b55c0ccf885591",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Terraria_Dresser",
+    "asset_id": "0fc740369fba932676951573582ca8e2",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "table3",
+    "asset_id": "2f9adacdfd7457715ab80818d9bf2641",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Barrel11",
+    "asset_id": "4f2c9446340e93baa05e4b4cdc608bb2",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chest",
+    "asset_id": "6d2752f72c580f3ae8f1f3aa088acc24",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sign",
+    "asset_id": "d3f3b97ddfd39313076326c33a0c6b9a",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "anvil",
+    "asset_id": "50c520f7a426063d2be2609304375774",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sawmill",
+    "asset_id": "20641905497d1c5e1302b08581e79c3f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chain",
+    "asset_id": "973cfab893b08ddf06613b58348d3067",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Grandfather_Clock",
+    "asset_id": "c474ee57b38ab795345340a7e1d0b537",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Grandfather_Clock_top",
+    "asset_id": "2ed18779b8a70065804eaffd18b31b05",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Grandfather_Clock_bot",
+    "asset_id": "97c836591b8512448aa569de31ed5d9d",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "cloud_top",
+    "asset_id": "6ffb7a317d70e9705bdc14efcdb174d9",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "cloud",
+    "asset_id": "46cc19d78ec558d73722bc3f6837b916",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass2Top",
+    "asset_id": "c8ea3173b1ef2227181f958694f37ffa",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass2",
+    "asset_id": "be0d1a18812781d5866ed205f57f1308",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "ice_top",
+    "asset_id": "15b1939f450d4a1ba2012d89c4a85811",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "ice",
+    "asset_id": "ed08a693942e01001f14dba6b0ac3aca",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Clay_top",
+    "asset_id": "e9b34f779f41d40e0c00374d0ce91b57",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Clay",
+    "asset_id": "5b069f2bcc0405b6b3c749fe3e3ea6e2",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Brick_top",
+    "asset_id": "4030086eda5f1108e06882b28317edc8",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Brick",
+    "asset_id": "93db0a3d7b551281f98c94152d5a74d5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "gold_top",
+    "asset_id": "a34b65bfaeabd6614fdf2d9420c74433",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "gold",
+    "asset_id": "3f4fbacc5dae9b8407dd4e2c5fe3e451",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "GoldBar",
+    "asset_id": "a5cee8d3bf547224993c74396dfba297",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "GoldBrick_top",
+    "asset_id": "b6b37939b71d4923ff9de68458631cac",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "GoldBrick",
+    "asset_id": "ca0e8af046bc12032872589c8435f618",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Silver_top",
+    "asset_id": "8a30b8ecd2e9ac56d9498c79e418b4b4",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Silver",
+    "asset_id": "78f4db6f8d1d5a400678070f49177d67",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "SilverBar",
+    "asset_id": "b1c0027aeb2f0a0fd2845065194aef07",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "SilverBrick_top",
+    "asset_id": "ed0b7f813782bff1d8fa31df98e07fc5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "SilverBrick",
+    "asset_id": "14795ef1c542b2a8f14480f637429d83",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "grass-seeds",
+    "asset_id": "cf2f8c366c9bd47cb428e375d869a7cd",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_1",
+    "asset_id": "7d906b0972651ff89b3a535df34d7980",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_2",
+    "asset_id": "65230535de264b962a39d6bf6dade300",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_3",
+    "asset_id": "0be6ce30ffd311bd6fbe6690c94088cc",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_4",
+    "asset_id": "73a28b23733571457d5cce425fe351be",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_5",
+    "asset_id": "87b672fe15d5297691229eec059ac96c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_6",
+    "asset_id": "c183b119e27082e50341f02ef5bc9b54",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_8",
+    "asset_id": "76bbf0c8022ec78a85a69acd70a0b470",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_9",
+    "asset_id": "2b7dbb32e82c8a9298eca8656abe5fe5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_7",
+    "asset_id": "fd1c3027c652d3f80fc88b951fdf798e",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Plants_10",
+    "asset_id": "b6b9d7b9df3dd5fd93651ceba4b38970",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "fence",
+    "asset_id": "82d70787a7bbf33ea6283e54d30aa876",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "fence_iron",
+    "asset_id": "5f5a7b8930dff12b75ef6a61463a694c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chandelier_gold",
+    "asset_id": "702bdf88ec6b77e9ba938202dbe3eba4",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "candelabra",
+    "asset_id": "73a188fa2b302ef11985e40453ec68b8",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chest_gold",
+    "asset_id": "2ff95983ed7dc51bcb4e7d1756a4697f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bath",
+    "asset_id": "22d9c509a4af87292b1219550630cf65",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "trash",
+    "asset_id": "7e0a8e92b781c1d601753ffc6a65716e",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "toilet",
+    "asset_id": "1da5229c834264ff27a5ad8c6671a9cb",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "cooks_pot",
+    "asset_id": "6f70583c573d64da2e54f42644313120",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bath1",
+    "asset_id": "e866a793519d408a793dcfb40bd95c84",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bath2",
+    "asset_id": "9e9895973706459a31d0ade74d6efe57",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Builder_Potion",
+    "asset_id": "423c026cd86c560bbe5e14336e6cc4a5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mining_Potion",
+    "asset_id": "bcb1f778a04bc2d680b1f9484f4d763e",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Swiftness_Potion",
+    "asset_id": "e512da1f74f01e0215e6371d0bb2f26f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "diamond_block",
+    "asset_id": "42459e1aed561f0b5e48f69353e93693",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Diamond",
+    "asset_id": "c0f53c58897ef2722a0b76a4ac8e7cc9",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "diamond_sparkle_top",
+    "asset_id": "6b925cf51b72cfde3194461a1f467ec3",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "diamond_sparkle",
+    "asset_id": "19231269abb4e5c6813a4e5e8fb29547",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "stone_slab",
+    "asset_id": "d3fc897040ca9047cede8e93e2873063",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sand_slab",
+    "asset_id": "58103cc7b95cfe676df042bb5a573d05",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "plant_in_pot",
+    "asset_id": "aabc16e798259c69acf0484556ef5a14",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bookcase1",
+    "asset_id": "bdcdf283287b49cdad21bbacb55f49b4",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bookcase2",
+    "asset_id": "f7da4112f2c62f8175638653da1b2f80",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bookcase3",
+    "asset_id": "660a62a19b7a3e0b9cf803ce5e6b572c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bookcase4",
+    "asset_id": "2482df961e37cf2baaa59760554134b6",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bookcase_item",
+    "asset_id": "ff334c9b8c12a766d9e04d67b6d93a32",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Skyware_Chest",
+    "asset_id": "26d12371abe4bae639e2715db8586250",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Heavy_Work_Bench",
+    "asset_id": "fd10ec891ded8c60071189e1cddd2a42",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Bug_Net",
+    "asset_id": "7197d876228a7730ade75a211d854fa7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "rabbit1",
+    "asset_id": "2f3c462b5e8ce9c4eecba58fd65c3483",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "beam_top",
+    "asset_id": "4d8024b500756cf7784f840732cf0833",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "beam",
+    "asset_id": "c01129a7283a29e7631d5654c8f0d653",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sofa0",
+    "asset_id": "d244c8150335f94dcc3ca73cb68c162a",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sofa1",
+    "asset_id": "a785915aeb4a43e251efd49011fc9594",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sofa2",
+    "asset_id": "498a673070f4e9536993eaac077ae153",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "piano",
+    "asset_id": "6638baf6ff43bbf14b647dfebace4770",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "piano1",
+    "asset_id": "092c66038386435a3685649d580ed62b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "piano2",
+    "asset_id": "7716b61cde552cef26c57d6a4d0cd695",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chain2",
+    "asset_id": "2c026634f54bc4f799daa73d7628a95c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "frog1",
+    "asset_id": "4354c5895e3350a2a5bc50ad78595089",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "slime-green-1",
+    "asset_id": "698359608402d9d9a07c3685dd9c0b06",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sword-wooden",
+    "asset_id": "6bd3f8eef60311e1e2b0c12385bb8c06",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Broadsword-Iron",
+    "asset_id": "e571bffc4d611cd13ddccd713cf81ff7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "gel",
+    "asset_id": "d196bfd105485f57a3ff48b795bef642",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Platinum_top",
+    "asset_id": "4ff579223bf793bf4c9dabec0c3e2db3",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Platinum",
+    "asset_id": "60e50d6ebf7e41fc32d1dc8d9bba49ae",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Platinum-Bar",
+    "asset_id": "72007efc967af5a85d8fd369479599d9",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Gold_Pickaxe",
+    "asset_id": "688bd2302eb0d26afaa5b5e92f7d9fe9",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Gold_Axe",
+    "asset_id": "5305563e3e3b27a1c617eebfd82e2557",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sword-golden",
+    "asset_id": "83964bca92b4c73510b681516f621b1a",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Platinum_Pickaxe3",
+    "asset_id": "66978225153b252ee792e5265280d6a7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Platinum_Axe2",
+    "asset_id": "d25ba44d84d6392d3158dc442ad31359",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sword-platinum3",
+    "asset_id": "5227f90d439a0ba87eeea81689b0a69c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Demon_Eye",
+    "asset_id": "9ea36789adf1c2d54f32a270cdbdff3d",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lens",
+    "asset_id": "22dad5725a1e38bc94f2fe55faf47274",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "zombie_01",
+    "asset_id": "3d4a56c7c04dd34b014e7d67e0ee04bb",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "easter-egg",
+    "asset_id": "460895f4c711d134062d53530979a336",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chocolate_top",
+    "asset_id": "e2bae4f63c60666851110d8fcf80e27b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "chocolate",
+    "asset_id": "55702da8676c74ca38c3703560171ca9",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sign_home",
+    "asset_id": "7c56db34d6f468018453dda609c17797",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "crab",
+    "asset_id": "31af06cd44bba1d398317eb2c9723b99",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Molten_Pickaxe",
+    "asset_id": "76f34da83a98178088d5ef6814c5a08f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Blue_Phaseblade",
+    "asset_id": "5d421c0dad386edfeb3ddf1d7f5b19bd",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Diamond_Staff",
+    "asset_id": "68ca074dbb53f6a8bf7621ebc1c91bee",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water",
+    "asset_id": "ea23f6f073207349bfc579003762a600",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water15",
+    "asset_id": "85b0fa6cabf05179c6998a6e8efa97e5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water14",
+    "asset_id": "f369b6e40b6e69f641942e072ea32f5f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water13",
+    "asset_id": "92779e7e1de3b408765114b7d0f44674",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water12",
+    "asset_id": "15a6a112d5f7b798d26f24940cbae579",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water11",
+    "asset_id": "1ec5c96f38a1868e57b5dcfe0787e2f4",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water10",
+    "asset_id": "5f6ca2a19776ad9c544e2e94601becd1",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water09",
+    "asset_id": "93010e195c92d48708a7a294871b8c38",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water08",
+    "asset_id": "1dc1a0c452262f559964b7f929e86b46",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water07",
+    "asset_id": "659bdde372a848889c599712c3950121",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water06",
+    "asset_id": "a8d68a4aa6f1181e2b3097bacdc8a4aa",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water05",
+    "asset_id": "1fd7d0ff843db5afc074b754c2b6f3ce",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water04",
+    "asset_id": "91437335497c5829d43faa0235825a3f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water03",
+    "asset_id": "e00e47020ccf4d71145db8ec2fb83f17",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water02",
+    "asset_id": "5d0c9d13362d7da3874caad89b3d1dcb",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "water01",
+    "asset_id": "e2c0c0a3cf9c896b0af8920863fe58f7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "goldfish2",
+    "asset_id": "960a58b283894332071a33f624701d8b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "jellyfish2",
+    "asset_id": "b819a67acb365651612f404df30e79fc",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava1",
+    "asset_id": "04df5085b067c2a4b44b100f71462543",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava2",
+    "asset_id": "c5423526f8c329342f5356a9f5494187",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava3",
+    "asset_id": "3c52408e5a58de5439cb3b88f2f7b515",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava4",
+    "asset_id": "1ee4d306950f35c9bc33a0ec4eac6f44",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava5",
+    "asset_id": "a2c17a4d0bf6ca81b19eac9e93787a5b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava6",
+    "asset_id": "56ee7b2e4fb9571edb8e5d9260762313",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava7",
+    "asset_id": "9f22b5c9fd2ff87d3c44f3027bee370c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava8",
+    "asset_id": "572604a60277b935306fce40ed8435fb",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava9",
+    "asset_id": "4089e2175dbe7eb24ed57d93332fcf46",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava10",
+    "asset_id": "e3b59d956f0e93361ad548319f062c62",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava11",
+    "asset_id": "6316e3f4a45811e4be79994475a72c04",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava12",
+    "asset_id": "984ec5f669c303b4928e30e50f0a4398",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava13",
+    "asset_id": "e1f35d9cc51d49f2c847ce238f8a1dd0",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava14",
+    "asset_id": "5c5cf4a089056ae6e45bf3195c8f6c1b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava15",
+    "asset_id": "1bb492ff43e41b94ca19ccc5783bc9cd",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava16",
+    "asset_id": "f9ba7a3e67f04d234a44bfb9bfc513d1",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Obsidian",
+    "asset_id": "5aefc841a0fe64399932f124fb52f401",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Lesser_Healing_Potion",
+    "asset_id": "2d1f80466ea0288a00e2e01df19ed01b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Healing_Potion",
+    "asset_id": "b41078dce3c6539ef300a326326d4986",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Greater_Healing_Potion",
+    "asset_id": "af1b63ffe0d823c58769e3e133441222",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Featherfall_Potion",
+    "asset_id": "bab5280f82dd0f98455b68ff40a67452",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Spelunker_Potion",
+    "asset_id": "8e5bd74eedef0bde11eaad8add496592",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Obsidian_Skin_Potion",
+    "asset_id": "cb54d25cceb2ee742d9aa45388bdf434",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Gills_Potion",
+    "asset_id": "d8b35522881855e725d5dfd7fab608a2",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "slime-purple",
+    "asset_id": "26d28677d8bcb8e126282fc9ff6087ca",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bunny-slime",
+    "asset_id": "9ae8a630958822e9dab634502a271cca",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "slime-blue",
+    "asset_id": "04044dd3f4f1cc3d8863b88bc0c14da3",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava-slime",
+    "asset_id": "1e7fe85e1670de004ff98e36a676bbcd",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "pyranha",
+    "asset_id": "ee322f40273c3e7e5bcef517c78f399f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "shark",
+    "asset_id": "d0fc4457f9ab20ae3ee8e4e2cb8b9c31",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Shark_Fin",
+    "asset_id": "1d0970aa070774f81952389afff18f39",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Hook",
+    "asset_id": "009a024c55dd26f34b2680bde7782263",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Zombie_Arm",
+    "asset_id": "b6b22cb0ab0f8c52bdd625a7c85c0520",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "copper_Pickaxe",
+    "asset_id": "7289839e835facd576f8a13ae027cfb3",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Copper_Broadsword",
+    "asset_id": "2494e6ec470ee384aa900cfd91659d76",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Copper_Axe",
+    "asset_id": "c31734f8ee6abdbd893f26903cc43de5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Empty_Bucket",
+    "asset_id": "c1c019725d155b620bd85b3aa9f40117",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Water_Bucket",
+    "asset_id": "8de3e6a031f3b6eef93f714da59b4adb",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Lava_Bucket",
+    "asset_id": "67334c8d636206caae0655fa179b6888",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "hellstone_top",
+    "asset_id": "d5a91258ee425582eb87531d6dc2c76b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "hellstone",
+    "asset_id": "690f395a201d0dc6b70eec32f56e2c9b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Hellstone_Bar",
+    "asset_id": "47de68f6f9fc80e81874419b1c15ec1c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "vine",
+    "asset_id": "5d4880d53217d0458b5dc7d6e572e6de",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Hellforge",
+    "asset_id": "b3c6dc6a56652d0565c7dbafabb77297",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bat",
+    "asset_id": "632216ce59020a2a0d65cc12013d2db4",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "lava-bat2",
+    "asset_id": "bbbd37e0dd809b474c7a3f4525192a65",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Water_Chest",
+    "asset_id": "727f1b05846d7ab82c41aec1cd19e6c2",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Obsidian_Chest",
+    "asset_id": "cc8b57d686e7217662533f58fc2924a9",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Item_71",
+    "asset_id": "d924d708b8741cf682f61eeebc9b9ac1",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Item_72",
+    "asset_id": "f9e227ce850acf090658c6d3c5cc97fd",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Item_73",
+    "asset_id": "045246124660ac85503987986dea2620",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "topaz_stone",
+    "asset_id": "d5d7630277329e13946f7d62511997bd",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Item_180",
+    "asset_id": "fa21d51954d66ff1bf37c76fae4081e1",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "ruby_stone",
+    "asset_id": "e1399ea741b4347f45998a23dd6cdb89",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Item_178",
+    "asset_id": "4189a76abe14b00be99c4ed738e4cf92",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "emerald_stone",
+    "asset_id": "75f394e61b015d62b7c7f357886ae548",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Item_179",
+    "asset_id": "dbd66e1773325fc143d3607d3ca93b3c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "sapphire_stone",
+    "asset_id": "eaa9915d45a2a5b1954b55ff2711b1a1",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Item_177",
+    "asset_id": "f70345659ec46586884ad6122a686210",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "amethyst_stone",
+    "asset_id": "60fdf985135f836046a41aaa30661db5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Item_181",
+    "asset_id": "eb6593ecd65b87f27e3655e38765b304",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_Door",
+    "asset_id": "44f1fbae468f5f84e13eb858838e10f7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass_Door",
+    "asset_id": "194f424296fda24dc0fbedaff46d73c4",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Obsidian_Door",
+    "asset_id": "1e9d5593c06e1048c4bf84b44ab7a852",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door-closed-iron",
+    "asset_id": "34cb16017f6481c6b9c4f5b49927784f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door-closed-iron2",
+    "asset_id": "29bb025769b054965e530d0bcf6de0b0",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door-closed-glass",
+    "asset_id": "7967543bf8ae6ce84ae4f7737239e575",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door-closed-glass2",
+    "asset_id": "6934c86495cad980507878be8e30d076",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door-closed-obsidian2",
+    "asset_id": "2a72307a9043493c5f870df3d76e6b5c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "door-closed-obsidian",
+    "asset_id": "6850a344d4ffe3da7afc4a96ecce3f61",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass_Kiln",
+    "asset_id": "6148e9a52ec7fe266a68993c24c25742",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Monarch_Butterfly",
+    "asset_id": "d0492b0d8129e5637dc527192ab723e2",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass_Table",
+    "asset_id": "1e0546ba52c6453da3ffe2b58cdf17d4",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass_Lantern",
+    "asset_id": "075216cd7e9285194fc74e69a2825631",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass_Chandelier",
+    "asset_id": "b3400d9c6fc33c37de87730aeba1f5e5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Pot",
+    "asset_id": "8682ca885284e03da37245e0014850d1",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Wooden_Sink",
+    "asset_id": "b526d81c852f83cb24d7a8682ef03314",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass_Platform",
+    "asset_id": "1e07f6e86d2ad1762d99a3bb59aa1c2c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "SquirrelW",
+    "asset_id": "67e7b45ae0c7a204f8c5931e07e18531",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mouse",
+    "asset_id": "8a97182e24416328506400690692652a",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "FireflyB",
+    "asset_id": "d145c18072a7cf1062ebc5e2a168832e",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Fiery_Greatsword",
+    "asset_id": "daf2c1527e74f64164176351f56ac843",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "glass_bed",
+    "asset_id": "5452c8599b96b5c764804b7a5ff47a6f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Placed_Beds",
+    "asset_id": "be930f96fe9130f17969c9828312eb33",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Placed_Beds3",
+    "asset_id": "763397d74c957e248bcb4d9911d39b31",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "bed_obsidian",
+    "asset_id": "be63831e2183055ac65c80689773a1b7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Placed_Beds2",
+    "asset_id": "adf4fb8ed54dc34064bf10df2943367e",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Placed_Beds4",
+    "asset_id": "8304c57f23fe80eba09799627c83c0e2",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "gold_bed",
+    "asset_id": "2fb57f4a73eafcd4cc3f316ebc9e6a35",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Placed_Beds5",
+    "asset_id": "397638d8747152125602a89bb2d8afae",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Placed_Beds6",
+    "asset_id": "c2ebfd58a017ecc996e4b1d9a8bfcda1",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mushroom_Bed",
+    "asset_id": "0a11e04427a014d82f1d4c391fc1f561",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Placed_Beds7",
+    "asset_id": "32d33e8c42843a16e6039fddcd2e3f26",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Placed_Beds8",
+    "asset_id": "cad0c9a3af2668b3f2bb5844b447e66b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Wooden_Crate",
+    "asset_id": "47136392c8ce2e8f63cafb524e540e08",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_Crate",
+    "asset_id": "38939150955d78469c151c18231243a3",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "mushroom_t",
+    "asset_id": "515a6eb940e386a4493f2dbeef73e5d3",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "mushroom",
+    "asset_id": "84038069bae3faadcdadbf931f4fbd30",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "table4",
+    "asset_id": "f6e763d3c84f6bc5027976a56eaf2cc5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "table2",
+    "asset_id": "d6edf356ba9495284820447ccf58981c",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_Table(2)",
+    "asset_id": "597f21627570d353f713b23761e4a562",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_Table",
+    "asset_id": "ca6ff9e684336579036576d2584711c5",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Iron_Table2",
+    "asset_id": "cff934007326c033e385aa466e5b0abb",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Obsidian_Table (1)",
+    "asset_id": "530f6150ebfd7e6e63f63f1b4beaa09f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Obsidian_Table",
+    "asset_id": "3ede712232c337ad19567c24ec5e357f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Obsidian_Table2",
+    "asset_id": "24750b2f3fe99a3c84ba9b5fdbb1e2ed",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mushroom_Table (1)",
+    "asset_id": "a38efa831215d00e579548480c3b77b6",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mushroom_Table",
+    "asset_id": "1f38015084fcf554da103e7628a8579b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mushroom_Table2",
+    "asset_id": "f94dfbbe048416aa8e5257e3f2ae56b0",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass_Table2",
+    "asset_id": "f3ca157856434654de61be08585c5cfc",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Glass_Table3",
+    "asset_id": "011dba80ca5e4a932f4aa34f17e9c186",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Vases2",
+    "asset_id": "757ca1ff61e3842186ea0c6fe15e6c98",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Vases",
+    "asset_id": "0aa71c02423a0429c261fa124905bc6f",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Vases3",
+    "asset_id": "1e2b1b86856e0a333ac187085bc24860",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Vases4",
+    "asset_id": "89cf45c082aabc54e28ebcf2733e2e91",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Suspicious_Looking_Eye",
+    "asset_id": "660b339de479e055f756c5eeb7d89fa1",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Demon_Altar",
+    "asset_id": "19ddf3ea1fead7d5da86b97c96df16a7",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Demonite_ore",
+    "asset_id": "2f978d6428d6ac73764ad25a2973cae6",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Demonite",
+    "asset_id": "3e4326f9eb0ebb7024bbcb8f3d2c00f3",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Demonite_Bar",
+    "asset_id": "70e53f0941657e69b955bde3459f6f99",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Light's_Bane",
+    "asset_id": "ed698138aafe3b5a481b1561e8d4563b",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Eye_of_Cthulhu_Mask",
+    "asset_id": "06a5d27fddeeeeafb6aa3b532422250a",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Santa",
+    "asset_id": "b026c0ada4b154fc0b599048540bf810",
+    "mime_type": "png",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Cobalt Ore",
+    "asset_id": "d548ab9bfecb78580c09958f6c9b4fd0",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Cobalt Bar",
+    "asset_id": "6994216c14c1bc9a2ed752d049106f9f",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mythril Ore",
+    "asset_id": "d7d1acefc1be4de6f0e76ac949ed2214",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mythril Bar",
+    "asset_id": "9d621e8e0e3e8774f3ba518abbd1d30c",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Titanium Ore",
+    "asset_id": "d7e2757849dd703746b4d3b0e811db9e",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Titanium Bar",
+    "asset_id": "f1581950d2f0f875356fd4f34c0771fe",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Chlorophyte Ore",
+    "asset_id": "0bee0a62a7956047dbf186fdf8c30ad6",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Chlorophyte Bar",
+    "asset_id": "35c523b46292a718438aaa645e7b6124",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Shroomite Bar",
+    "asset_id": "a4db52147373f16ddc73bfc5fddf0157",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Hallowed Bar",
+    "asset_id": "44220d5e74d7f3448fc3dff302d7d716",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mythril Anvil",
+    "asset_id": "4f1836115be1929652b04d570affdc3d",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Titanium Forge",
+    "asset_id": "ce458368f99ab4e19d1f74befa0d9b19",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Autohammer",
+    "asset_id": "84dc61a0017495932edfc77d65a0d5f7",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Shroomite Digging Claws",
+    "asset_id": "5a0befe9fa59abdb8d9947daf8c4b39b",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Cobalt Sword",
+    "asset_id": "11f27a1a4f433c20ac0c990370c87a2f",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Mythril Sword",
+    "asset_id": "5ed328ed1d94a437fcf807108744b023",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Titanium Sword",
+    "asset_id": "3377344d5ef6f4122ee1c3af45ae261e",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Chlorophyte Claymore",
+    "asset_id": "2920e6d40e3a721255d43e8280d4ab93",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Chlorophyte Saber",
+    "asset_id": "f89b9ded8ef338f8aef8f00889d6daef",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Excalibur",
+    "asset_id": "23296bcfc77ee6c93115ee0cc56feb7c",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "True Excalibur",
+    "asset_id": "025bc4b37a95b1f328fdb47be3675e42",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Prime Mask",
+    "asset_id": "94b77eea8083969b87c8561ffc4d5aa7",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "Skeletron Prime",
+    "asset_id": "b0a316db3678c8cccfe8fb421dd57f92",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  },
+  {
+    "costume_name": "BIG",
+    "asset_id": "b2854016a6123a359d95d9bfa46b9b7c",
+    "mime_type": "svg",
+    "base64_image_data": "ERROR_ASSET_NOT_LOADED"
+  }
+]
