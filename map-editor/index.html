@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>350x160 Map Editor with Scalable Selector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to handle the large grid and small tiles */
+        #map-container {
+            display: grid;
+            /* Sets up a 350-column grid, using 2px per column initially */
+            grid-template-columns: repeat(350, 2px); 
+            grid-template-rows: repeat(160, 2px);
+            width: 700px; /* 350 * 2px */
+            height: 320px; /* 160 * 2px */
+            overflow: auto; /* Enable scrolling for large map */
+            border: 1px solid #475569; /* Slate border */
+            
+            /* Zoom properties */
+            transform-origin: top left;
+            transition: transform 0.2s ease-in-out;
+        }
+        .tile {
+            width: 2px;
+            height: 2px;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: background-color 0.1s;
+            /* In a real scenario, you'd use background-image for Base64 symbols */
+        }
+        /* Custom scrollbar for better visibility */
+        #map-container::-webkit-scrollbar { width: 8px; height: 8px; }
+        #map-container::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        #map-container::-webkit-scrollbar-track { background: #1e293b; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 font-sans min-h-screen flex flex-col items-center">
+
+    <div class="max-w-5xl w-full">
+        <h1 class="text-3xl font-bold mb-6 text-blue-400">350x160 Tile Map Editor (Data Loaded)</h1>
+        
+        <!-- Controls Panel -->
+        <div class="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 flex flex-wrap justify-between items-center space-y-4 md:space-y-0">
+            
+            <!-- Block Selector (Dropdown) -->
+            <div class="flex flex-col space-y-2 w-full md:w-1/3">
+                <h2 class="text-xl font-semibold text-blue-300">Block Selector</h2>
+                <select id="blockSelectorDropdown" class="p-3 border border-gray-600 rounded-lg bg-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 text-white cursor-pointer"></select>
+                <div id="current-block-preview" class="flex items-center mt-2 text-sm font-medium">
+                    Current: <span id="current-block-icon" class="mx-2 text-xl inline-block w-6 h-6 text-center leading-6">◻️</span>
+                    <span id="current-block-label">Loading...</span>
+                </div>
+            </div>
+            
+            <!-- Zoom Controls -->
+            <div class="flex items-center space-x-2 md:w-1/4 justify-center">
+                <span class="text-lg font-medium">Zoom:</span>
+                <button id="zoomOutButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold w-10 h-10 rounded-full text-xl shadow-md transition duration-200">-</button>
+                <span id="zoomLevelDisplay" class="text-xl font-bold text-blue-300 w-12 text-center">1.0x</span>
+                <button id="zoomInButton" class="bg-gray-700 hover:bg-gray-600 text-white font-bold w-10 h-10 rounded-full text-xl shadow-md transition duration-200">+</button>
+            </div>
+            
+            <!-- File Load/Export -->
+            <div class="flex flex-col space-y-2 w-full md:w-1/3">
+                <input type="file" id="fileInput" accept=".txt,.csv" class="p-2 border border-gray-600 rounded-lg bg-gray-700 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600">
+                <button id="exportButton" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200">
+                    Export Map Data
+                </button>
+            </div>
+        </div>
+        
+        <!-- Map and Status -->
+        <div class="flex flex-col items-center">
+            <div id="status-message" class="text-red-400 mb-2 h-6"></div>
+            <div id="map-wrapper" class="p-2 bg-gray-700 rounded-xl shadow-inner">
+                <div id="map-container" class="transform origin-top-left">
+                    <!-- Tiles will be appended here -->
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-400">Map dimensions: 350 (W) x 160 (H) = 56,000 tiles.</p>
+            <p class="text-xs text-gray-500 mt-1">Data maps from the bottom-right tile (349, 159) backwards to the top-left.</p>
+        </div>
+
+    </div>
+
+    <!-- 
+        *** SIMULATED EXTERNAL DATABASE RESPONSE ***
+        This script tag contains the JSON data that a real external API would return. 
+        In your actual deployment, you would remove this and rely on the real URL.
+    -->
+    <script id="block-data-json" type="application/json">
+        {
+            "0": { "label": "Empty", "color": "bg-gray-900", "tile": "#111827", "symbol": "◻️" },
+            "1": { "label": "Wall (Stone)", "color": "bg-gray-400", "tile": "#9ca3af", "symbol": "🧱" },
+            "2": { "label": "Start Point", "color": "bg-green-600", "tile": "#16a34a", "symbol": "🟢" },
+            "3": { "label": "Exit Gate", "color": "bg-red-600", "tile": "#dc2626", "symbol": "🚩" },
+            "4": { "label": "Water (Deep)", "color": "bg-blue-500", "tile": "#3b82f6", "symbol": "🌊" },
+            "5": { "label": "Sand Pit", "color": "bg-yellow-500", "tile": "#f59e0b", "symbol": "⏳" },
+            "6": { "label": "Wooden Bridge", "color": "bg-yellow-800", "tile": "#b45309", "symbol": "🌉" },
+            "7": { "label": "Lava Flow", "color": "bg-red-800", "tile": "#991b1b", "symbol": "🌋" },
+            "8": { "label": "Ice Floor", "color": "bg-cyan-200", "tile": "#a5f3fc", "symbol": "🧊" },
+            "9": { "label": "Mossy Brick", "color": "bg-green-700", "tile": "#047857", "symbol": "🌿" },
+            <!-- Mock blocks 10 through 300 -->
+            
+            "10": { "label": "Collectible/Tile 10", "tile": "hsl(12, 60%, 30%)", "symbol": "💎" },
+            "11": { "label": "Collectible/Tile 11", "tile": "hsl(13, 60%, 30%)", "symbol": "🔑" },
+            "12": { "label": "Collectible/Tile 12", "tile": "hsl(14, 60%, 30%)", "symbol": "🛡️" },
+            "13": { "label": "Collectible/Tile 13", "tile": "hsl(15, 60%, 30%)", "symbol": "⚔️" },
+            "14": { "label": "Collectible/Tile 14", "tile": "hsl(16, 60%, 30%)", "symbol": "📦" },
+            "15": { "label": "Collectible/Tile 15", "tile": "hsl(17, 60%, 30%)", "symbol": "🚪" },
+            "16": { "label": "Collectible/Tile 16", "tile": "hsl(18, 60%, 30%)", "symbol": "🪜" },
+            "17": { "label": "Collectible/Tile 17", "tile": "hsl(19, 60%, 30%)", "symbol": "🪨" },
+            "18": { "label": "Collectible/Tile 18", "tile": "hsl(20, 60%, 30%)", "symbol": "🍄" },
+            "19": { "label": "Collectible/Tile 19", "tile": "hsl(21, 60%, 30%)", "symbol": "💎" },
+            "20": { "label": "Collectible/Tile 20", "tile": "hsl(22, 60%, 30%)", "symbol": "🔑" },
+            "21": { "label": "Collectible/Tile 21", "tile": "hsl(23, 60%, 30%)", "symbol": "🛡️" },
+            "22": { "label": "Collectible/Tile 22", "tile": "hsl(24, 60%, 30%)", "symbol": "⚔️" },
+            "23": { "label": "Collectible/Tile 23", "tile": "hsl(25, 60%, 30%)", "symbol": "📦" },
+            "24": { "label": "Collectible/Tile 24", "tile": "hsl(26, 60%, 30%)", "symbol": "🚪" },
+            "25": { "label": "Collectible/Tile 25", "tile": "hsl(27, 60%, 30%)", "symbol": "🪜" },
+            "26": { "label": "Collectible/Tile 26", "tile": "hsl(28, 60%, 30%)", "symbol": "🪨" },
+            "27": { "label": "Collectible/Tile 27", "tile": "hsl(29, 60%, 30%)", "symbol": "🍄" },
+            "28": { "label": "Collectible/Tile 28", "tile": "hsl(30, 60%, 30%)", "symbol": "💎" },
+            "29": { "label": "Collectible/Tile 29", "tile": "hsl(31, 60%, 30%)", "symbol": "🔑" },
+            "30": { "label": "Collectible/Tile 30", "tile": "hsl(32, 60%, 30%)", "symbol": "🛡️" },
+            "31": { "label": "Collectible/Tile 31", "tile": "hsl(33, 60%, 30%)", "symbol": "⚔️" },
+            "32": { "label": "Collectible/Tile 32", "tile": "hsl(34, 60%, 30%)", "symbol": "📦" },
+            "33": { "label": "Collectible/Tile 33", "tile": "hsl(35, 60%, 30%)", "symbol": "🚪" },
+            "34": { "label": "Collectible/Tile 34", "tile": "hsl(36, 60%, 30%)", "symbol": "🪜" },
+            "35": { "label": "Collectible/Tile 35", "tile": "hsl(37, 60%, 30%)", "symbol": "🪨" },
+            "36": { "label": "Collectible/Tile 36", "tile": "hsl(38, 60%, 30%)", "symbol": "🍄" },
+            "37": { "label": "Collectible/Tile 37", "tile": "hsl(39, 60%, 30%)", "symbol": "💎" },
+            "38": { "label": "Collectible/Tile 38", "tile": "hsl(40, 60%, 30%)", "symbol": "🔑" },
+            "39": { "label": "Collectible/Tile 39", "tile": "hsl(41, 60%, 30%)", "symbol": "🛡️" },
+            "40": { "label": "Collectible/Tile 40", "tile": "hsl(42, 60%, 30%)", "symbol": "⚔️" },
+            "41": { "label": "Collectible/Tile 41", "tile": "hsl(43, 60%, 30%)", "symbol": "📦" },
+            "42": { "label": "Collectible/Tile 42", "tile": "hsl(44, 60%, 30%)", "symbol": "🚪" },
+            "43": { "label": "Collectible/Tile 43", "tile": "hsl(45, 60%, 30%)", "symbol": "🪜" },
+            "44": { "label": "Collectible/Tile 44", "tile": "hsl(46, 60%, 30%)", "symbol": "🪨" },
+            "45": { "label": "Collectible/Tile 45", "tile": "hsl(47, 60%, 30%)", "symbol": "🍄" },
+            "46": { "label": "Collectible/Tile 46", "tile": "hsl(48, 60%, 30%)", "symbol": "💎" },
+            "47": { "label": "Collectible/Tile 47", "tile": "hsl(49, 60%, 30%)", "symbol": "🔑" },
+            "48": { "label": "Collectible/Tile 48", "tile": "hsl(50, 60%, 30%)", "symbol": "🛡️" },
+            "49": { "label": "Collectible/Tile 49", "tile": "hsl(51, 60%, 30%)", "symbol": "⚔️" },
+            "50": { "label": "Collectible/Tile 50", "tile": "hsl(52, 60%, 30%)", "symbol": "📦" },
+            "51": { "label": "Collectible/Tile 51", "tile": "hsl(53, 60%, 30%)", "symbol": "🚪" },
+            "52": { "label": "Collectible/Tile 52", "tile": "hsl(54, 60%, 30%)", "symbol": "🪜" },
+            "53": { "label": "Collectible/Tile 53", "tile": "hsl(55, 60%, 30%)", "symbol": "🪨" },
+            "54": { "label": "Collectible/Tile 54", "tile": "hsl(56, 60%, 30%)", "symbol": "🍄" },
+            "55": { "label": "Collectible/Tile 55", "tile": "hsl(57, 60%, 30%)", "symbol": "💎" },
+            "56": { "label": "Collectible/Tile 56", "tile": "hsl(58, 60%, 30%)", "symbol": "🔑" },
+            "57": { "label": "Collectible/Tile 57", "tile": "hsl(59, 60%, 30%)", "symbol": "🛡️" },
+            "58": { "label": "Collectible/Tile 58", "tile": "hsl(60, 60%, 30%)", "symbol": "⚔️" },
+            "59": { "label": "Collectible/Tile 59", "tile": "hsl(61, 60%, 30%)", "symbol": "📦" },
+            "60": { "label": "Collectible/Tile 60", "tile": "hsl(62, 60%, 30%)", "symbol": "🚪" },
+            "61": { "label": "Collectible/Tile 61", "tile": "hsl(63, 60%, 30%)", "symbol": "🪜" },
+            "62": { "label": "Collectible/Tile 62", "tile": "hsl(64, 60%, 30%)", "symbol": "🪨" },
+            "63": { "label": "Collectible/Tile 63", "tile": "hsl(65, 60%, 30%)", "symbol": "🍄" },
+            "64": { "label": "Collectible/Tile 64", "tile": "hsl(66, 60%, 30%)", "symbol": "💎" },
+            "65": { "label": "Collectible/Tile 65", "tile": "hsl(67, 60%, 30%)", "symbol": "🔑" },
+            "66": { "label": "Collectible/Tile 66", "tile": "hsl(68, 60%, 30%)", "symbol": "🛡️" },
+            "67": { "label": "Collectible/Tile 67", "tile": "hsl(69, 60%, 30%)", "symbol": "⚔️" },
+            "68": { "label": "Collectible/Tile 68", "tile": "hsl(70, 60%, 30%)", "symbol": "📦" },
+            "69": { "label": "Collectible/Tile 69", "tile": "hsl(71, 60%, 30%)", "symbol": "🚪" },
+            "70": { "label": "Collectible/Tile 70", "tile": "hsl(72, 60%, 30%)", "symbol": "🪜" },
+            "71": { "label": "Collectible/Tile 71", "tile": "hsl(73, 60%, 30%)", "symbol": "🪨" },
+            "72": { "label": "Collectible/Tile 72", "tile": "hsl(74, 60%, 30%)", "symbol": "🍄" },
+            "73": { "label": "Collectible/Tile 73", "tile": "hsl(75, 60%, 30%)", "symbol": "💎" },
+            "74": { "label": "Collectible/Tile 74", "tile": "hsl(76, 60%, 30%)", "symbol": "🔑" },
+            "75": { "label": "Collectible/Tile 75", "tile": "hsl(77, 60%, 30%)", "symbol": "🛡️" },
+            "76": { "label": "Collectible/Tile 76", "tile": "hsl(78, 60%, 30%)", "symbol": "⚔️" },
+            "77": { "label": "Collectible/Tile 77", "tile": "hsl(79, 60%, 30%)", "symbol": "📦" },
+            "78": { "label": "Collectible/Tile 78", "tile": "hsl(80, 60%, 30%)", "symbol": "🚪" },
+            "79": { "label": "Collectible/Tile 79", "tile": "hsl(81, 60%, 30%)", "symbol": "🪜" },
+            "80": { "label": "Collectible/Tile 80", "tile": "hsl(82, 60%, 30%)", "symbol": "🪨" },
+            "81": { "label": "Collectible/Tile 81", "tile": "hsl(83, 60%, 30%)", "symbol": "🍄" },
+            "82": { "label": "Collectible/Tile 82", "tile": "hsl(84, 60%, 30%)", "symbol": "💎" },
+            "83": { "label": "Collectible/Tile 83", "tile": "hsl(85, 60%, 30%)", "symbol": "🔑" },
+            "84": { "label": "Collectible/Tile 84", "tile": "hsl(86, 60%, 30%)", "symbol": "🛡️" },
+            "85": { "label": "Collectible/Tile 85", "tile": "hsl(87, 60%, 30%)", "symbol": "⚔️" },
+            "86": { "label": "Collectible/Tile 86", "tile": "hsl(88, 60%, 30%)", "symbol": "📦" },
+            "87": { "label": "Collectible/Tile 87", "tile": "hsl(89, 60%, 30%)", "symbol": "🚪" },
+            "88": { "label": "Collectible/Tile 88", "tile": "hsl(90, 60%, 30%)", "symbol": "🪜" },
+            "89": { "label": "Collectible/Tile 89", "tile": "hsl(91, 60%, 30%)", "symbol": "🪨" },
+            "90": { "label": "Collectible/Tile 90", "tile": "hsl(92, 60%, 30%)", "symbol": "🍄" },
+            "91": { "label": "Collectible/Tile 91", "tile": "hsl(93, 60%, 30%)", "symbol": "💎" },
+            "92": { "label": "Collectible/Tile 92", "tile": "hsl(94, 60%, 30%)", "symbol": "🔑" },
+            "93": { "label": "Collectible/Tile 93", "tile": "hsl(95, 60%, 30%)", "symbol": "🛡️" },
+            "94": { "label": "Collectible/Tile 94", "tile": "hsl(96, 60%, 30%)", "symbol": "⚔️" },
+            "95": { "label": "Collectible/Tile 95", "tile": "hsl(97, 60%, 30%)", "symbol": "📦" },
+            "96": { "label": "Collectible/Tile 96", "tile": "hsl(98, 60%, 30%)", "symbol": "🚪" },
+            "97": { "label": "Collectible/Tile 97", "tile": "hsl(99, 60%, 30%)", "symbol": "🪜" },
+            "98": { "label": "Collectible/Tile 98", "tile": "hsl(100, 60%, 30%)", "symbol": "🪨" },
+            "99": { "label": "Collectible/Tile 99", "tile": "hsl(101, 60%, 30%)", "symbol": "🍄" },
+            "100": { "label": "Collectible/Tile 100", "tile": "hsl(102, 60%, 30%)", "symbol": "💎" },
+            "101": { "label": "Collectible/Tile 101", "tile": "hsl(103, 60%, 30%)", "symbol": "🔑" },
+            "102": { "label": "Collectible/Tile 102", "tile": "hsl(104, 60%, 30%)", "symbol": "🛡️" },
+            "103": { "label": "Collectible/Tile 103", "tile": "hsl(105, 60%, 30%)", "symbol": "⚔️" },
+            "104": { "label": "Collectible/Tile 104", "tile": "hsl(106, 60%, 30%)", "symbol": "📦" },
+            "105": { "label": "Collectible/Tile 105", "tile": "hsl(107, 60%, 30%)", "symbol": "🚪" },
+            "106": { "label": "Collectible/Tile 106", "tile": "hsl(108, 60%, 30%)", "symbol": "🪜" },
+            "107": { "label": "Collectible/Tile 107", "tile": "hsl(109, 60%, 30%)", "symbol": "🪨" },
+            "108": { "label": "Collectible/Tile 108", "tile": "hsl(110, 60%, 30%)", "symbol": "🍄" },
+            "109": { "label": "Collectible/Tile 109", "tile": "hsl(111, 60%, 30%)", "symbol": "💎" },
+            "110": { "label": "Collectible/Tile 110", "tile": "hsl(112, 60%, 30%)", "symbol": "🔑" },
+            "111": { "label": "Collectible/Tile 111", "tile": "hsl(113, 60%, 30%)", "symbol": "🛡️" },
+            "112": { "label": "Collectible/Tile 112", "tile": "hsl(114, 60%, 30%)", "symbol": "⚔️" },
+            "113": { "label": "Collectible/Tile 113", "tile": "hsl(115, 60%, 30%)", "symbol": "📦" },
+            "114": { "label": "Collectible/Tile 114", "tile": "hsl(116, 60%, 30%)", "symbol": "🚪" },
+            "115": { "label": "Collectible/Tile 115", "tile": "hsl(117, 60%, 30%)", "symbol": "🪜" },
+            "116": { "label": "Collectible/Tile 116", "tile": "hsl(118, 60%, 30%)", "symbol": "🪨" },
+            "117": { "label": "Collectible/Tile 117", "tile": "hsl(119, 60%, 30%)", "symbol": "🍄" },
+            "118": { "label": "Collectible/Tile 118", "tile": "hsl(120, 60%, 30%)", "symbol": "💎" },
+            "119": { "label": "Collectible/Tile 119", "tile": "hsl(121, 60%, 30%)", "symbol": "🔑" },
+            "120": { "label": "Collectible/Tile 120", "tile": "hsl(122, 60%, 30%)", "symbol": "🛡️" },
+            "121": { "label": "Collectible/Tile 121", "tile": "hsl(123, 60%, 30%)", "symbol": "⚔️" },
+            "122": { "label": "Collectible/Tile 122", "tile": "hsl(124, 60%, 30%)", "symbol": "📦" },
+            "123": { "label": "Collectible/Tile 123", "tile": "hsl(125, 60%, 30%)", "symbol": "🚪" },
+            "124": { "label": "Collectible/Tile 124", "tile": "hsl(126, 60%, 30%)", "symbol": "🪜" },
+            "125": { "label": "Collectible/Tile 125", "tile": "hsl(127, 60%, 30%)", "symbol": "🪨" },
+            "126": { "label": "Collectible/Tile 126", "tile": "hsl(128, 60%, 30%)", "symbol": "🍄" },
+            "127": { "label": "Collectible/Tile 127", "tile": "hsl(129, 60%, 30%)", "symbol": "💎" },
+            "128": { "label": "Collectible/Tile 128", "tile": "hsl(130, 60%, 30%)", "symbol": "🔑" },
+            "129": { "label": "Collectible/Tile 129", "tile": "hsl(131, 60%, 30%)", "symbol": "🛡️" },
+            "130": { "label": "Collectible/Tile 130", "tile": "hsl(132, 60%, 30%)", "symbol": "⚔️" },
+            "131": { "label": "Collectible/Tile 131", "tile": "hsl(133, 60%, 30%)", "symbol": "📦" },
+            "132": { "label": "Collectible/Tile 132", "tile": "hsl(134, 60%, 30%)", "symbol": "🚪" },
+            "133": { "label": "Collectible/Tile 133", "tile": "hsl(135, 60%, 30%)", "symbol": "🪜" },
+            "134": { "label": "Collectible/Tile 134", "tile": "hsl(136, 60%, 30%)", "symbol": "🪨" },
+            "135": { "label": "Collectible/Tile 135", "tile": "hsl(137, 60%, 30%)", "symbol": "🍄" },
+            "136": { "label": "Collectible/Tile 136", "tile": "hsl(138, 60%, 30%)", "symbol": "💎" },
+            "137": { "label": "Collectible/Tile 137", "tile": "hsl(139, 60%, 30%)", "symbol": "🔑" },
+            "138": { "label": "Collectible/Tile 138", "tile": "hsl(140, 60%, 30%)", "symbol": "🛡️" },
+            "139": { "label": "Collectible/Tile 139", "tile": "hsl(141, 60%, 30%)", "symbol": "⚔️" },
+            "140": { "label": "Collectible/Tile 140", "tile": "hsl(142, 60%, 30%)", "symbol": "📦" },
+            "141": { "label": "Collectible/Tile 141", "tile": "hsl(143, 60%, 30%)", "symbol": "🚪" },
+            "142": { "label": "Collectible/Tile 142", "tile": "hsl(144, 60%, 30%)", "symbol": "🪜" },
+            "143": { "label": "Collectible/Tile 143", "tile": "hsl(145, 60%, 30%)", "symbol": "🪨" },
+            "144": { "label": "Collectible/Tile 144", "tile": "hsl(146, 60%, 30%)", "symbol": "🍄" },
+            "145": { "label": "Collectible/Tile 145", "tile": "hsl(147, 60%, 30%)", "symbol": "💎" },
+            "146": { "label": "Collectible/Tile 146", "tile": "hsl(148, 60%, 30%)", "symbol": "🔑" },
+            "147": { "label": "Collectible/Tile 147", "tile": "hsl(149, 60%, 30%)", "symbol": "🛡️" },
+            "148": { "label": "Collectible/Tile 148", "tile": "hsl(150, 60%, 30%)", "symbol": "⚔️" },
+            "149": { "label": "Collectible/Tile 149", "tile": "hsl(151, 60%, 30%)", "symbol": "📦" },
+            "150": { "label": "Collectible/Tile 150", "tile": "hsl(152, 60%, 30%)", "symbol": "🚪" },
+            "151": { "label": "Collectible/Tile 151", "tile": "hsl(153, 60%, 30%)", "symbol": "🪜" },
+            "152": { "label": "Collectible/Tile 152", "tile": "hsl(154, 60%, 30%)", "symbol": "🪨" },
+            "153": { "label": "Collectible/Tile 153", "tile": "hsl(155, 60%, 30%)", "symbol": "🍄" },
+            "154": { "label": "Collectible/Tile 154", "tile": "hsl(156, 60%, 30%)", "symbol": "💎" },
+            "155": { "label": "Collectible/Tile 155", "tile": "hsl(157, 60%, 30%)", "symbol": "🔑" },
+            "156": { "label": "Collectible/Tile 156", "tile": "hsl(158, 60%, 30%)", "symbol": "🛡️" },
+            "157": { "label": "Collectible/Tile 157", "tile": "hsl(159, 60%, 30%)", "symbol": "⚔️" },
+            "158": { "label": "Collectible/Tile 158", "tile": "hsl(160, 60%, 30%)", "symbol": "📦" },
+            "159": { "label": "Collectible/Tile 159", "tile": "hsl(161, 60%, 30%)", "symbol": "🚪" },
+            "160": { "label": "Collectible/Tile 160", "tile": "hsl(162, 60%, 30%)", "symbol": "🪜" },
+            "161": { "label": "Collectible/Tile 161", "tile": "hsl(163, 60%, 30%)", "symbol": "🪨" },
+            "162": { "label": "Collectible/Tile 162", "tile": "hsl(164, 60%, 30%)", "symbol": "🍄" },
+            "163": { "label": "Collectible/Tile 163", "tile": "hsl(165, 60%, 30%)", "symbol": "💎" },
+            "164": { "label": "Collectible/Tile 164", "tile": "hsl(166, 60%, 30%)", "symbol": "🔑" },
+            "165": { "label": "Collectible/Tile 165", "tile": "hsl(167, 60%, 30%)", "symbol": "🛡️" },
+            "166": { "label": "Collectible/Tile 166", "tile": "hsl(168, 60%, 30%)", "symbol": "⚔️" },
+            "167": { "label": "Collectible/Tile 167", "tile": "hsl(169, 60%, 30%)", "symbol": "📦" },
+            "168": { "label": "Collectible/Tile 168", "tile": "hsl(170, 60%, 30%)", "symbol": "🚪" },
+            "169": { "label": "Collectible/Tile 169", "tile": "hsl(171, 60%, 30%)", "symbol": "🪜" },
+            "170": { "label": "Collectible/Tile 170", "tile": "hsl(172, 60%, 30%)", "symbol": "🪨" },
+            "171": { "label": "Collectible/Tile 171", "tile": "hsl(173, 60%, 30%)", "symbol": "🍄" },
+            "172": { "label": "Collectible/Tile 172", "tile": "hsl(174, 60%, 30%)", "symbol": "💎" },
+            "173": { "label": "Collectible/Tile 173", "tile": "hsl(175, 60%, 30%)", "symbol": "🔑" },
+            "174": { "label": "Collectible/Tile 174", "tile": "hsl(176, 60%, 30%)", "symbol": "🛡️" },
+            "175": { "label": "Collectible/Tile 175", "tile": "hsl(177, 60%, 30%)", "symbol": "⚔️" },
+            "176": { "label": "Collectible/Tile 176", "tile": "hsl(178, 60%, 30%)", "symbol": "📦" },
+            "177": { "label": "Collectible/Tile 177", "tile": "hsl(179, 60%, 30%)", "symbol": "🚪" },
+            "178": { "label": "Collectible/Tile 178", "tile": "hsl(180, 60%, 30%)", "symbol": "🪜" },
+            "179": { "label": "Collectible/Tile 179", "tile": "hsl(181, 60%, 30%)", "symbol": "🪨" },
+            "180": { "label": "Collectible/Tile 180", "tile": "hsl(182, 60%, 30%)", "symbol": "🍄" },
+            "181": { "label": "Collectible/Tile 181", "tile": "hsl(183, 60%, 30%)", "symbol": "💎" },
+            "182": { "label": "Collectible/Tile 182", "tile": "hsl(184, 60%, 30%)", "symbol": "🔑" },
+            "183": { "label": "Collectible/Tile 183", "tile": "hsl(185, 60%, 30%)", "symbol": "🛡️" },
+            "184": { "label": "Collectible/Tile 184", "tile": "hsl(186, 60%, 30%)", "symbol": "⚔️" },
+            "185": { "label": "Collectible/Tile 185", "tile": "hsl(187, 60%, 30%)", "symbol": "📦" },
+            "186": { "label": "Collectible/Tile 186", "tile": "hsl(188, 60%, 30%)", "symbol": "🚪" },
+            "187": { "label": "Collectible/Tile 187", "tile": "hsl(189, 60%, 30%)", "symbol": "🪜" },
+            "188": { "label": "Collectible/Tile 188", "tile": "hsl(190, 60%, 30%)", "symbol": "🪨" },
+            "189": { "label": "Collectible/Tile 189", "tile": "hsl(191, 60%, 30%)", "symbol": "🍄" },
+            "190": { "label": "Collectible/Tile 190", "tile": "hsl(192, 60%, 30%)", "symbol": "💎" },
+            "191": { "label": "Collectible/Tile 191", "tile": "hsl(193, 60%, 30%)", "symbol": "🔑" },
+            "192": { "label": "Collectible/Tile 192", "tile": "hsl(194, 60%, 30%)", "symbol": "🛡️" },
+            "193": { "label": "Collectible/Tile 193", "tile": "hsl(195, 60%, 30%)", "symbol": "⚔️" },
+            "194": { "label": "Collectible/Tile 194", "tile": "hsl(196, 60%, 30%)", "symbol": "📦" },
+            "195": { "label": "Collectible/Tile 195", "tile": "hsl(197, 60%, 30%)", "symbol": "🚪" },
+            "196": { "label": "Collectible/Tile 196", "tile": "hsl(198, 60%, 30%)", "symbol": "🪜" },
+            "197": { "label": "Collectible/Tile 197", "tile": "hsl(199, 60%, 30%)", "symbol": "🪨" },
+            "198": { "label": "Collectible/Tile 198", "tile": "hsl(200, 60%, 30%)", "symbol": "🍄" },
+            "199": { "label": "Collectible/Tile 199", "tile": "hsl(201, 60%, 30%)", "symbol": "💎" },
+            "200": { "label": "Collectible/Tile 200", "tile": "hsl(202, 60%, 30%)", "symbol": "🔑" },
+            "201": { "label": "Collectible/Tile 201", "tile": "hsl(203, 60%, 30%)", "symbol": "🛡️" },
+            "202": { "label": "Collectible/Tile 202", "tile": "hsl(204, 60%, 30%)", "symbol": "⚔️" },
+            "203": { "label": "Collectible/Tile 203", "tile": "hsl(205, 60%, 30%)", "symbol": "📦" },
+            "204": { "label": "Collectible/Tile 204", "tile": "hsl(206, 60%, 30%)", "symbol": "🚪" },
+            "205": { "label": "Collectible/Tile 205", "tile": "hsl(207, 60%, 30%)", "symbol": "🪜" },
+            "206": { "label": "Collectible/Tile 206", "tile": "hsl(208, 60%, 30%)", "symbol": "🪨" },
+            "207": { "label": "Collectible/Tile 207", "tile": "hsl(209, 60%, 30%)", "symbol": "🍄" },
+            "208": { "label": "Collectible/Tile 208", "tile": "hsl(210, 60%, 30%)", "symbol": "💎" },
+            "209": { "label": "Collectible/Tile 209", "tile": "hsl(211, 60%, 30%)", "symbol": "🔑" },
+            "210": { "label": "Collectible/Tile 210", "tile": "hsl(212, 60%, 30%)", "symbol": "🛡️" },
+            "211": { "label": "Collectible/Tile 211", "tile": "hsl(213, 60%, 30%)", "symbol": "⚔️" },
+            "212": { "label": "Collectible/Tile 212", "tile": "hsl(214, 60%, 30%)", "symbol": "📦" },
+            "213": { "label": "Collectible/Tile 213", "tile": "hsl(215, 60%, 30%)", "symbol": "🚪" },
+            "214": { "label": "Collectible/Tile 214", "tile": "hsl(216, 60%, 30%)", "symbol": "🪜" },
+            "215": { "label": "Collectible/Tile 215", "tile": "hsl(217, 60%, 30%)", "symbol": "🪨" },
+            "216": { "label": "Collectible/Tile 216", "tile": "hsl(218, 60%, 30%)", "symbol": "🍄" },
+            "217": { "label": "Collectible/Tile 217", "tile": "hsl(219, 60%, 30%)", "symbol": "💎" },
+            "218": { "label": "Collectible/Tile 218", "tile": "hsl(220, 60%, 30%)", "symbol": "🔑" },
+            "219": { "label": "Collectible/Tile 219", "tile": "hsl(221, 60%, 30%)", "symbol": "🛡️" },
+            "220": { "label": "Collectible/Tile 220", "tile": "hsl(222, 60%, 30%)", "symbol": "⚔️" },
+            "221": { "label": "Collectible/Tile 221", "tile": "hsl(223, 60%, 30%)", "symbol": "📦" },
+            "222": { "label": "Collectible/Tile 222", "tile": "hsl(224, 60%, 30%)", "symbol": "🚪" },
+            "223": { "label": "Collectible/Tile 223", "tile": "hsl(225, 60%, 30%)", "symbol": "🪜" },
+            "224": { "label": "Collectible/Tile 224", "tile": "hsl(226, 60%, 30%)", "symbol": "🪨" },
+            "225": { "label": "Collectible/Tile 225", "tile": "hsl(227, 60%, 30%)", "symbol": "🍄" },
+            "226": { "label": "Collectible/Tile 226", "tile": "hsl(228, 60%, 30%)", "symbol": "💎" },
+            "227": { "label": "Collectible/Tile 227", "tile": "hsl(229, 60%, 30%)", "symbol": "🔑" },
+            "228": { "label": "Collectible/Tile 228", "tile": "hsl(230, 60%, 30%)", "symbol": "🛡️" },
+            "229": { "label": "Collectible/Tile 229", "tile": "hsl(231, 60%, 30%)", "symbol": "⚔️" },
+            "230": { "label": "Collectible/Tile 230", "tile": "hsl(232, 60%, 30%)", "symbol": "📦" },
+            "231": { "label": "Collectible/Tile 231", "tile": "hsl(233, 60%, 30%)", "symbol": "🚪" },
+            "232": { "label": "Collectible/Tile 232", "tile": "hsl(234, 60%, 30%)", "symbol": "🪜" },
+            "233": { "label": "Collectible/Tile 233", "tile": "hsl(235, 60%, 30%)", "symbol": "🪨" },
+            "234": { "label": "Collectible/Tile 234", "tile": "hsl(236, 60%, 30%)", "symbol": "🍄" },
+            "235": { "label": "Collectible/Tile 235", "tile": "hsl(237, 60%, 30%)", "symbol": "💎" },
+            "236": { "label": "Collectible/Tile 236", "tile": "hsl(238, 60%, 30%)", "symbol": "🔑" },
+            "237": { "label": "Collectible/Tile 237", "tile": "hsl(239, 60%, 30%)", "symbol": "🛡️" },
+            "238": { "label": "Collectible/Tile 238", "tile": "hsl(240, 60%, 30%)", "symbol": "⚔️" },
+            "239": { "label": "Collectible/Tile 239", "tile": "hsl(241, 60%, 30%)", "symbol": "📦" },
+            "240": { "label": "Collectible/Tile 240", "tile": "hsl(242, 60%, 30%)", "symbol": "🚪" },
+            "241": { "label": "Collectible/Tile 241", "tile": "hsl(243, 60%, 30%)", "symbol": "🪜" },
+            "242": { "label": "Collectible/Tile 242", "tile": "hsl(244, 60%, 30%)", "symbol": "🪨" },
+            "243": { "label": "Collectible/Tile 243", "tile": "hsl(245, 60%, 30%)", "symbol": "🍄" },
+            "244": { "label": "Collectible/Tile 244", "tile": "hsl(246, 60%, 30%)", "symbol": "💎" },
+            "245": { "label": "Collectible/Tile 245", "tile": "hsl(247, 60%, 30%)", "symbol": "🔑" },
+            "246": { "label": "Collectible/Tile 246", "tile": "hsl(248, 60%, 30%)", "symbol": "🛡️" },
+            "247": { "label": "Collectible/Tile 247", "tile": "hsl(249, 60%, 30%)", "symbol": "⚔️" },
+            "248": { "label": "Collectible/Tile 248", "tile": "hsl(250, 60%, 30%)", "symbol": "📦" },
+            "249": { "label": "Collectible/Tile 249", "tile": "hsl(251, 60%, 30%)", "symbol": "🚪" },
+            "250": { "label": "Collectible/Tile 250", "tile": "hsl(252, 60%, 30%)", "symbol": "🪜" },
+            "251": { "label": "Collectible/Tile 251", "tile": "hsl(253, 60%, 30%)", "symbol": "🪨" },
+            "252": { "label": "Collectible/Tile 252", "tile": "hsl(254, 60%, 30%)", "symbol": "🍄" },
+            "253": { "label": "Collectible/Tile 253", "tile": "hsl(255, 60%, 30%)", "symbol": "💎" },
+            "254": { "label": "Collectible/Tile 254", "tile": "hsl(256, 60%, 30%)", "symbol": "🔑" },
+            "255": { "label": "Collectible/Tile 255", "tile": "hsl(257, 60%, 30%)", "symbol": "🛡️" },
+            "256": { "label": "Collectible/Tile 256", "tile": "hsl(258, 60%, 30%)", "symbol": "⚔️" },
+            "257": { "label": "Collectible/Tile 257", "tile": "hsl(259, 60%, 30%)", "symbol": "📦" },
+            "258": { "label": "Collectible/Tile 258", "tile": "hsl(260, 60%, 30%)", "symbol": "🚪" },
+            "259": { "label": "Collectible/Tile 259", "tile": "hsl(261, 60%, 30%)", "symbol": "🪜" },
+            "260": { "label": "Collectible/Tile 260", "tile": "hsl(262, 60%, 30%)", "symbol": "🪨" },
+            "261": { "label": "Collectible/Tile 261", "tile": "hsl(263, 60%, 30%)", "symbol": "🍄" },
+            "262": { "label": "Collectible/Tile 262", "tile": "hsl(264, 60%, 30%)", "symbol": "💎" },
+            "263": { "label": "Collectible/Tile 263", "tile": "hsl(265, 60%, 30%)", "symbol": "🔑" },
+            "264": { "label": "Collectible/Tile 264", "tile": "hsl(266, 60%, 30%)", "symbol": "🛡️" },
+            "265": { "label": "Collectible/Tile 265", "tile": "hsl(267, 60%, 30%)", "symbol": "⚔️" },
+            "266": { "label": "Collectible/Tile 266", "tile": "hsl(268, 60%, 30%)", "symbol": "📦" },
+            "267": { "label": "Collectible/Tile 267", "tile": "hsl(269, 60%, 30%)", "symbol": "🚪" },
+            "268": { "label": "Collectible/Tile 268", "tile": "hsl(270, 60%, 30%)", "symbol": "🪜" },
+            "269": { "label": "Collectible/Tile 269", "tile": "hsl(271, 60%, 30%)", "symbol": "🪨" },
+            "270": { "label": "Collectible/Tile 270", "tile": "hsl(272, 60%, 30%)", "symbol": "🍄" },
+            "271": { "label": "Collectible/Tile 271", "tile": "hsl(273, 60%, 30%)", "symbol": "💎" },
+            "272": { "label": "Collectible/Tile 272", "tile": "hsl(274, 60%, 30%)", "symbol": "🔑" },
+            "273": { "label": "Collectible/Tile 273", "tile": "hsl(275, 60%, 30%)", "symbol": "🛡️" },
+            "274": { "label": "Collectible/Tile 274", "tile": "hsl(276, 60%, 30%)", "symbol": "⚔️" },
+            "275": { "label": "Collectible/Tile 275", "tile": "hsl(277, 60%, 30%)", "symbol": "📦" },
+            "276": { "label": "Collectible/Tile 276", "tile": "hsl(278, 60%, 30%)", "symbol": "🚪" },
+            "277": { "label": "Collectible/Tile 277", "tile": "hsl(279, 60%, 30%)", "symbol": "🪜" },
+            "278": { "label": "Collectible/Tile 278", "tile": "hsl(280, 60%, 30%)", "symbol": "🪨" },
+            "279": { "label": "Collectible/Tile 279", "tile": "hsl(281, 60%, 30%)", "symbol": "🍄" },
+            "280": { "label": "Collectible/Tile 280", "tile": "hsl(282, 60%, 30%)", "symbol": "💎" },
+            "281": { "label": "Collectible/Tile 281", "tile": "hsl(283, 60%, 30%)", "symbol": "🔑" },
+            "282": { "label": "Collectible/Tile 282", "tile": "hsl(284, 60%, 30%)", "symbol": "🛡️" },
+            "283": { "label": "Collectible/Tile 283", "tile": "hsl(285, 60%, 30%)", "symbol": "⚔️" },
+            "284": { "label": "Collectible/Tile 284", "tile": "hsl(286, 60%, 30%)", "symbol": "📦" },
+            "285": { "label": "Collectible/Tile 285", "tile": "hsl(287, 60%, 30%)", "symbol": "🚪" },
+            "286": { "label": "Collectible/Tile 286", "tile": "hsl(288, 60%, 30%)", "symbol": "🪜" },
+            "287": { "label": "Collectible/Tile 287", "tile": "hsl(289, 60%, 30%)", "symbol": "🪨" },
+            "288": { "label": "Collectible/Tile 288", "tile": "hsl(290, 60%, 30%)", "symbol": "🍄" },
+            "289": { "label": "Collectible/Tile 289", "tile": "hsl(291, 60%, 30%)", "symbol": "💎" },
+            "290": { "label": "Collectible/Tile 290", "tile": "hsl(292, 60%, 30%)", "symbol": "🔑" },
+            "291": { "label": "Collectible/Tile 291", "tile": "hsl(293, 60%, 30%)", "symbol": "🛡️" },
+            "292": { "label": "Collectible/Tile 292", "tile": "hsl(294, 60%, 30%)", "symbol": "⚔️" },
+            "293": { "label": "Collectible/Tile 293", "tile": "hsl(295, 60%, 30%)", "symbol": "📦" },
+            "294": { "label": "Collectible/Tile 294", "tile": "hsl(296, 60%, 30%)", "symbol": "🚪" },
+            "295": { "label": "Collectible/Tile 295", "tile": "hsl(297, 60%, 30%)", "symbol": "🪜" },
+            "296": { "label": "Collectible/Tile 296", "tile": "hsl(298, 60%, 30%)", "symbol": "🪨" },
+            "297": { "label": "Collectible/Tile 297", "tile": "hsl(299, 60%, 30%)", "symbol": "🍄" },
+            "298": { "label": "Collectible/Tile 298", "tile": "hsl(300, 60%, 30%)", "symbol": "💎" },
+            "299": { "label": "Collectible/Tile 299", "tile": "hsl(301, 60%, 30%)", "symbol": "🔑" },
+            "300": { "label": "Collectible/Tile 300", "tile": "hsl(302, 60%, 30%)", "symbol": "🛡️" }
+        }
+    </script>
+
+    <script>
+        // --- CONFIGURATION ---
+        const MAP_WIDTH = 350;
+        const MAP_HEIGHT = 160;
+        const TOTAL_TILES = MAP_WIDTH * MAP_HEIGHT;
+        const ZOOM_STEP = 0.5;
+        const MIN_ZOOM = 1.0;
+        const MAX_ZOOM = 4.0;
+        
+        // ** PLACEHOLDER URL for your external JSON database **
+        // When you deploy your actual API, replace this link. The JSON format 
+        // should match the structure inside the script tag below.
+        const EXTERNAL_BLOCK_DATA_URL = "https://your-api.com/v1/map_blocks.json";
+        
+        // --- STATE ---
+        let mapData = new Array(TOTAL_TILES).fill(0); 
+        let currentBlockType = 0;
+        let currentZoomLevel = MIN_ZOOM;
+        let BLOCK_TYPES = {}; // This will be populated from the "database"
+        let MAX_BLOCK_TYPE = 0;
+
+        // --- DOM REFERENCES ---
+        const mapContainer = document.getElementById('map-container');
+        const fileInput = document.getElementById('fileInput');
+        const exportButton = document.getElementById('exportButton');
+        const statusMessage = document.getElementById('status-message');
+        const blockSelectorDropdown = document.getElementById('blockSelectorDropdown');
+        const currentBlockLabel = document.getElementById('current-block-label');
+        const currentBlockIcon = document.getElementById('current-block-icon');
+        const zoomInButton = document.getElementById('zoomInButton');
+        const zoomOutButton = document.getElementById('zoomOutButton');
+        const zoomLevelDisplay = document.getElementById('zoomLevelDisplay');
+        const blockDataScript = document.getElementById('block-data-json');
+
+
+        // --- DATABASE INTERACTION (Simulated Fetch) ---
+
+        /**
+         * Simulates fetching block definitions from an external API.
+         * In a real app, you would replace the logic inside the try block with:
+         * * const response = await fetch(EXTERNAL_BLOCK_DATA_URL);
+         * if (!response.ok) throw new Error('Network response failed');
+         * return await response.json();
+         */
+        async function loadBlockData() {
+            try {
+                statusMessage.textContent = `Fetching block definitions from ${EXTERNAL_BLOCK_DATA_URL}...`;
+                
+                // --- SIMULATION OF FETCH START ---
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                if (!blockDataScript || !blockDataScript.textContent) {
+                    throw new Error("Embedded block data not found.");
+                }
+                
+                const data = JSON.parse(blockDataScript.textContent);
+
+                BLOCK_TYPES = data;
+                MAX_BLOCK_TYPE = Math.max(...Object.keys(BLOCK_TYPES).map(Number));
+                
+                statusMessage.textContent = `Successfully loaded ${Object.keys(BLOCK_TYPES).length} block definitions.`;
+                setTimeout(() => statusMessage.textContent = '', 3000);
+                
+                return BLOCK_TYPES;
+
+            } catch (error) {
+                const errorMessage = `Error loading block data: ${error.message}. Using default minimum set.`;
+                statusMessage.textContent = errorMessage;
+                console.error(errorMessage, error);
+                
+                BLOCK_TYPES = {
+                    0: { label: 'Empty', tile: '#111827', symbol: '◻️' },
+                    1: { label: 'Error Block', tile: '#881337', symbol: '❌' }
+                };
+                MAX_BLOCK_TYPE = 1;
+                return BLOCK_TYPES;
+            }
+        }
+
+        // --- CORE FUNCTIONS ---
+
+        function renderMap(data) {
+            mapContainer.innerHTML = ''; 
+
+            const grid = Array.from({ length: MAP_HEIGHT }, () => new Array(MAP_WIDTH).fill(0));
+            let dataIndex = 0;
+            for (let y = MAP_HEIGHT - 1; y >= 0; y--) {
+                for (let x = MAP_WIDTH - 1; x >= 0; x--) {
+                    const tileValue = (dataIndex < data.length) ? (data[dataIndex] || 0) : 0;
+                    grid[y][x] = tileValue;
+                    dataIndex++;
+                }
+            }
+
+            const finalMapData = [];
+            for (let y = 0; y < MAP_HEIGHT; y++) {
+                for (let x = 0; x < MAP_WIDTH; x++) {
+                    finalMapData.push(grid[y][x]);
+                }
+            }
+            mapData = finalMapData;
+
+            // Rendering of the tiles
+            finalMapData.forEach((value, index) => {
+                const blockId = value <= MAX_BLOCK_TYPE ? value : 0;
+                const type = BLOCK_TYPES[blockId] || BLOCK_TYPES[0];
+
+                const tile = document.createElement('div');
+                tile.className = `tile`;
+                // If using Base64: tile.style.backgroundImage = `url(${type.symbol})`;
+                tile.style.backgroundColor = type.tile; 
+                
+                tile.dataset.index = index;
+                tile.dataset.value = blockId;
+                
+                tile.addEventListener('click', handleTileClick);
+                
+                mapContainer.appendChild(tile);
+            });
+        }
+
+        function initBlockSelector() {
+            blockSelectorDropdown.innerHTML = '';
+            
+            Object.keys(BLOCK_TYPES).map(Number).sort((a, b) => a - b).forEach(key => {
+                const type = BLOCK_TYPES[key];
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `${key} - ${type.label}`;
+                
+                blockSelectorDropdown.appendChild(option);
+            });
+
+            blockSelectorDropdown.addEventListener('change', (e) => {
+                setCurrentBlockType(e.target.value);
+            });
+
+            setCurrentBlockType(0);
+        }
+
+        function setCurrentBlockType(type) {
+            currentBlockType = Number(type);
+            const block = BLOCK_TYPES[currentBlockType] || BLOCK_TYPES[0];
+            
+            currentBlockLabel.textContent = `${currentBlockType} - ${block.label}`;
+            currentBlockIcon.innerHTML = block.symbol;
+            
+            blockSelectorDropdown.value = currentBlockType;
+        }
+
+        function handleTileClick(event) {
+            const tile = event.target;
+            if (!tile.classList.contains('tile')) return; 
+
+            const index = Number(tile.dataset.index);
+            const newBlockValue = currentBlockType;
+            
+            const type = BLOCK_TYPES[newBlockValue] || BLOCK_TYPES[0];
+            tile.style.backgroundColor = type.tile;
+            tile.dataset.value = newBlockValue;
+            
+            mapData[index] = newBlockValue;
+        }
+
+
+        // --- ZOOM FUNCTIONS ---
+        function updateZoom() {
+            mapContainer.style.transform = `scale(${currentZoomLevel})`;
+            zoomLevelDisplay.textContent = `${currentZoomLevel.toFixed(1)}x`;
+
+            const scaledWidth = 700 * currentZoomLevel;
+            const scaledHeight = 320 * currentZoomLevel;
+
+            document.getElementById('map-wrapper').style.width = currentZoomLevel > MIN_ZOOM ? `${scaledWidth}px` : '704px'; // 700px + 4px padding
+            document.getElementById('map-wrapper').style.height = currentZoomLevel > MIN_ZOOM ? `${scaledHeight}px` : '324px'; // 320px + 4px padding
+
+            zoomOutButton.disabled = currentZoomLevel <= MIN_ZOOM;
+            zoomInButton.disabled = currentZoomLevel >= MAX_ZOOM;
+            zoomOutButton.classList.toggle('opacity-50', zoomOutButton.disabled);
+            zoomInButton.classList.toggle('opacity-50', zoomInButton.disabled);
+        }
+
+        function zoomIn() {
+            if (currentZoomLevel < MAX_ZOOM) {
+                currentZoomLevel = Math.min(MAX_BLOCK_TYPE, currentZoomLevel + ZOOM_STEP);
+                updateZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (currentZoomLevel > MIN_ZOOM) {
+                currentZoomLevel = Math.max(MIN_ZOOM, currentZoomLevel - ZOOM_STEP);
+                updateZoom();
+            }
+        }
+
+        function handleFileLoad(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const content = e.target.result;
+                    const rawValues = content.split(/[,\s]+/)
+                        .map(s => s.trim())
+                        .filter(s => s.length > 0)
+                        .map(Number);
+                    
+                    const validData = rawValues.map(v => {
+                        const clamped = Math.min(Math.max(0, v), MAX_BLOCK_TYPE);
+                        return isNaN(v) ? 0 : clamped;
+                    });
+
+                    if (validData.length === 0) {
+                        statusMessage.textContent = 'Error: Loaded file contains no valid numerical data.';
+                        setTimeout(() => statusMessage.textContent = '', 3000);
+                        return;
+                    }
+
+                    statusMessage.textContent = `Loaded ${validData.length} values. Mapping to 350x160 grid (BR to TL).`;
+                    setTimeout(() => statusMessage.textContent = '', 4000);
+                    
+                    renderMap(validData);
+
+                } catch (error) {
+                    statusMessage.textContent = 'Error processing file data.';
+                    console.error('File processing error:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function handleExport() {
+            const grid = [];
+            for (let i = 0; i < TOTAL_TILES; i++) {
+                const y = Math.floor(i / MAP_WIDTH);
+                const x = i % MAP_WIDTH;
+                grid.push({ x, y, value: mapData[i] });
+            }
+
+            grid.sort((a, b) => {
+                if (a.y !== b.y) { return b.y - a.y; }
+                return b.x - a.x;
+            });
+
+            const outputData = grid.map(item => item.value);
+            const csvContent = outputData.join(',');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'map_data.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            statusMessage.textContent = 'Map data exported successfully!';
+            setTimeout(() => statusMessage.textContent = '', 3000);
+        }
+        
+        window.onload = async () => {
+            await loadBlockData();
+
+            fileInput.addEventListener('change', handleFileLoad);
+            exportButton.addEventListener('click', handleExport);
+            zoomInButton.addEventListener('click', zoomIn);
+            zoomOutButton.addEventListener('click', zoomOut);
+
+            initBlockSelector();
+            renderMap(mapData);
+            updateZoom(); 
+        };
+
+    </script>
+</body>
+</html>
