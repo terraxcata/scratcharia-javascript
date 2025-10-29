@@ -14,8 +14,6 @@
             height: 320px; 
             overflow: auto;
             border: 1px solid #475569;
-            
-            /* Zoom properties */
             transform-origin: top left;
             transition: transform 0.2s ease-in-out;
         }
@@ -23,7 +21,7 @@
             width: 2px;
             height: 2px;
             box-sizing: border-box;
-            cursor: pointer;
+            cursor: crosshair;
             transition: background-color 0.1s;
         }
         #map-container::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -84,26 +82,8 @@
         </div>
 
     </div>
-
-    <!-- 
-    <script id="block-data-json" type="application/json">
-        {
-            "0": { "label": "Empty", "color": "bg-gray-900", "tile": "#111827", "symbol": "◻️" },
-            "1": { "label": "Wall (Stone)", "color": "bg-gray-400", "tile": "#9ca3af", "symbol": "🧱" },
-            "2": { "label": "Start Point", "color": "bg-green-600", "tile": "#16a34a", "symbol": "🟢" },
-            "3": { "label": "Exit Gate", "color": "bg-red-600", "tile": "#dc2626", "symbol": "🚩" },
-            "4": { "label": "Water (Deep)", "color": "bg-blue-500", "tile": "#3b82f6", "symbol": "🌊" },
-            "5": { "label": "Sand Pit", "color": "bg-yellow-500", "tile": "#f59e0b", "symbol": "⏳" },
-            "6": { "label": "Wooden Bridge", "color": "bg-yellow-800", "tile": "#b45309", "symbol": "🌉" },
-            "7": { "label": "Lava Flow", "color": "bg-red-800", "tile": "#991b1b", "symbol": "🌋" },
-            "8": { "label": "Ice Floor", "color": "bg-cyan-200", "tile": "#a5f3fc", "symbol": "🧊" },
-            "9": { "label": "Mossy Brick", "color": "bg-green-700", "tile": "#047857", "symbol": "🌿" }
-        }
-    </script>
-    -->
     
     <script>
-        // --- CONFIGURATION ---
         const MAP_WIDTH = 350;
         const MAP_HEIGHT = 160;
         const TOTAL_TILES = MAP_WIDTH * MAP_HEIGHT;
@@ -111,15 +91,15 @@
         const MIN_ZOOM = 1.0;
         const MAX_ZOOM = 4.0;
         
-        const EXTERNAL_BLOCK_DATA_URL = "https://your-api.com/v1/map_blocks.json";
+        const EXTERNAL_BLOCK_DATA_URL = "https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/map-editor/extracted_costumes.json";
         
         let mapData = new Array(TOTAL_TILES).fill(0); 
         let currentBlockType = 0;
         let currentZoomLevel = MIN_ZOOM;
         let BLOCK_TYPES = {};
         let MAX_BLOCK_TYPE = 0;
+        let isPainting = false;
 
-        // --- DOM REFERENCES ---
         const mapContainer = document.getElementById('map-container');
         const fileInput = document.getElementById('fileInput');
         const exportButton = document.getElementById('exportButton');
@@ -130,33 +110,38 @@
         const zoomInButton = document.getElementById('zoomInButton');
         const zoomOutButton = document.getElementById('zoomOutButton');
         const zoomLevelDisplay = document.getElementById('zoomLevelDisplay');
-        const blockDataScript = document.getElementById('block-data-json');
 
+        const EMPTY_BLOCK_FALLBACK = {
+            id: 0,
+            costume_name: "empty",
+            label: "Empty",
+            mime_type: "image/png",
+            base64_image_data: "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAFVJREFUWEdjYBgFo2AUjIJRMApGATgDEzT/YNAA0kLgXg0D8n80wAg0D/L/0wCMAH6+BGAoGAWjYBSMGgAAMoYwB1iJk7IAAAAASUVORK5CYII="
+        };
 
-        // --- DATABASE INTERACTION (Simulated Fetch) ---
-
-        /**
-         * Simulates fetching block definitions from an external API.
-         * In a real app, you would replace the logic inside the try block with:
-         * * const response = await fetch(EXTERNAL_BLOCK_DATA_URL);
-         * if (!response.ok) throw new Error('Network response failed');
-         * return await response.json();
-         */
         async function loadBlockData() {
             try {
                 statusMessage.textContent = `Fetching block definitions from ${EXTERNAL_BLOCK_DATA_URL}...`;
                 
-                // --- SIMULATION OF FETCH START ---
-                await new Promise(resolve => setTimeout(resolve, 500));
+                const response = await fetch(EXTERNAL_BLOCK_DATA_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
-                if (!blockDataScript || !blockDataScript.textContent) {
-                    throw new Error("Embedded block data not found.");
-                }
+                const dataArray = await response.json();
                 
-                const data = JSON.parse(blockDataScript.textContent);
-
-                BLOCK_TYPES = data;
-                MAX_BLOCK_TYPE = Math.max(...Object.keys(BLOCK_TYPES).map(Number));
+                BLOCK_TYPES = {};
+                
+                BLOCK_TYPES[0] = EMPTY_BLOCK_FALLBACK;
+                
+                dataArray.forEach((block, index) => {
+                    const id = index + 1; 
+                    BLOCK_TYPES[id] = { 
+                        id: id,
+                        label: block.costume_name, 
+                        ...block 
+                    };
+                });
+                
+                MAX_BLOCK_TYPE = dataArray.length;
                 
                 statusMessage.textContent = `Successfully loaded ${Object.keys(BLOCK_TYPES).length} block definitions.`;
                 setTimeout(() => statusMessage.textContent = '', 3000);
@@ -169,15 +154,55 @@
                 console.error(errorMessage, error);
                 
                 BLOCK_TYPES = {
-                    0: { label: 'Empty', tile: '#111827', symbol: '◻️' },
-                    1: { label: 'Error Block', tile: '#881337', symbol: '❌' }
+                    0: EMPTY_BLOCK_FALLBACK,
+                    1: { id: 1, label: 'Error Block', costume_name: 'error', mime_type: 'image/png', base64_image_data: "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAKklEQVR42u3BAQEAAAABIP6fOpgAEAAAAAAAAAAAAAAAAAAAAAF+jYABg2fN+hAAAAABJRU5ErkJggg==" }
                 };
                 MAX_BLOCK_TYPE = 1;
                 return BLOCK_TYPES;
             }
         }
 
-        // --- CORE FUNCTIONS ---
+        function paintTile(tileElement) {
+            if (!tileElement || !tileElement.classList.contains('tile')) return;
+
+            const index = Number(tileElement.dataset.index);
+            const newBlockValue = currentBlockType;
+            
+            const type = BLOCK_TYPES[newBlockValue] || BLOCK_TYPES[0];
+            
+            const base64Mime = type.mime_type || 'image/png';
+            const base64Data = type.base64_image_data;
+
+            if (base64Data) {
+                tileElement.style.backgroundImage = `url(data:${base64Mime};base64,${base64Data})`;
+                tileElement.style.backgroundSize = '2px 2px';
+                tileElement.style.backgroundColor = 'transparent';
+            } else {
+                tileElement.style.backgroundImage = 'none';
+                tileElement.style.backgroundColor = '#111827';
+            }
+            
+            tileElement.dataset.value = newBlockValue;
+            
+            mapData[index] = newBlockValue;
+        }
+
+        function handleTileMouseOver(event) {
+            if (isPainting && event.target.classList.contains('tile')) {
+                paintTile(event.target);
+            }
+        }
+
+        function startPainting(event) {
+            if (event.buttons === 1 && event.target.classList.contains('tile')) { 
+                isPainting = true;
+                paintTile(event.target);
+            }
+        }
+
+        function stopPainting() {
+            isPainting = false;
+        }
 
         function renderMap(data) {
             mapContainer.innerHTML = ''; 
@@ -200,20 +225,28 @@
             }
             mapData = finalMapData;
 
-            // Rendering of the tiles
             finalMapData.forEach((value, index) => {
                 const blockId = value <= MAX_BLOCK_TYPE ? value : 0;
                 const type = BLOCK_TYPES[blockId] || BLOCK_TYPES[0];
 
                 const tile = document.createElement('div');
                 tile.className = `tile`;
-                // If using Base64: tile.style.backgroundImage = `url(${type.symbol})`;
-                tile.style.backgroundColor = type.tile; 
+                
+                const base64Mime = type.mime_type || 'image/png';
+                const base64Data = type.base64_image_data;
+                
+                if (base64Data) {
+                    tile.style.backgroundImage = `url(data:${base64Mime};base64,${base64Data})`;
+                    tile.style.backgroundSize = '2px 2px';
+                    tile.style.backgroundColor = 'transparent';
+                } else {
+                    tile.style.backgroundColor = '#111827'; 
+                }
                 
                 tile.dataset.index = index;
                 tile.dataset.value = blockId;
                 
-                tile.addEventListener('click', handleTileClick);
+                tile.addEventListener('mouseover', handleTileMouseOver);
                 
                 mapContainer.appendChild(tile);
             });
@@ -226,7 +259,7 @@
                 const type = BLOCK_TYPES[key];
                 const option = document.createElement('option');
                 option.value = key;
-                option.textContent = `${key} - ${type.label}`;
+                option.textContent = `${key} - ${type.costume_name}`;
                 
                 blockSelectorDropdown.appendChild(option);
             });
@@ -242,28 +275,24 @@
             currentBlockType = Number(type);
             const block = BLOCK_TYPES[currentBlockType] || BLOCK_TYPES[0];
             
-            currentBlockLabel.textContent = `${currentBlockType} - ${block.label}`;
-            currentBlockIcon.innerHTML = block.symbol;
+            currentBlockLabel.textContent = `${currentBlockType} - ${block.costume_name}`;
+            
+            const base64Mime = block.mime_type || 'image/png';
+            const base64Data = block.base64_image_data;
+            if (base64Data) {
+                currentBlockIcon.innerHTML = '';
+                currentBlockIcon.style.backgroundImage = `url(data:${base64Mime};base64,${base64Data})`;
+                currentBlockIcon.style.backgroundSize = '100% 100%';
+                currentBlockIcon.style.backgroundColor = 'transparent';
+            } else {
+                currentBlockIcon.innerHTML = '◻️';
+                currentBlockIcon.style.backgroundImage = 'none';
+                currentBlockIcon.style.backgroundColor = 'transparent';
+            }
             
             blockSelectorDropdown.value = currentBlockType;
         }
 
-        function handleTileClick(event) {
-            const tile = event.target;
-            if (!tile.classList.contains('tile')) return; 
-
-            const index = Number(tile.dataset.index);
-            const newBlockValue = currentBlockType;
-            
-            const type = BLOCK_TYPES[newBlockValue] || BLOCK_TYPES[0];
-            tile.style.backgroundColor = type.tile;
-            tile.dataset.value = newBlockValue;
-            
-            mapData[index] = newBlockValue;
-        }
-
-
-        // --- ZOOM FUNCTIONS ---
         function updateZoom() {
             mapContainer.style.transform = `scale(${currentZoomLevel})`;
             zoomLevelDisplay.textContent = `${currentZoomLevel.toFixed(1)}x`;
@@ -271,8 +300,8 @@
             const scaledWidth = 700 * currentZoomLevel;
             const scaledHeight = 320 * currentZoomLevel;
 
-            document.getElementById('map-wrapper').style.width = currentZoomLevel > MIN_ZOOM ? `${scaledWidth}px` : '704px'; // 700px + 4px padding
-            document.getElementById('map-wrapper').style.height = currentZoomLevel > MIN_ZOOM ? `${scaledHeight}px` : '324px'; // 320px + 4px padding
+            document.getElementById('map-wrapper').style.width = currentZoomLevel > MIN_ZOOM ? `${scaledWidth + 4}px` : '704px';
+            document.getElementById('map-wrapper').style.height = currentZoomLevel > MIN_ZOOM ? `${scaledHeight + 4}px` : '324px';
 
             zoomOutButton.disabled = currentZoomLevel <= MIN_ZOOM;
             zoomInButton.disabled = currentZoomLevel >= MAX_ZOOM;
@@ -369,6 +398,10 @@
             exportButton.addEventListener('click', handleExport);
             zoomInButton.addEventListener('click', zoomIn);
             zoomOutButton.addEventListener('click', zoomOut);
+            
+            mapContainer.addEventListener('mousedown', startPainting);
+            document.addEventListener('mouseup', stopPainting);
+            mapContainer.addEventListener('mouseleave', stopPainting);
 
             initBlockSelector();
             renderMap(mapData);
