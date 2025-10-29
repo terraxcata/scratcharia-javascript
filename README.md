@@ -40,5 +40,3 @@ MOST SCRIPTS ARE WRITTEN WITH AI
 [*Auto Replacement (Semi broken)*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/Auto-Replacment.js)
 
-[*Costume Extractor*
-](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/costume-extractor.js)
