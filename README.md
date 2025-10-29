@@ -3,7 +3,9 @@ for use with scratcharia mod loader and the mod https://scratch.mit.edu/projects
 Scratcharia Map Editor: [HERE
 ](https://terraxcata.github.io/scratcharia-javascript/map-editor/index)
 
-A bunch of scripts for scratcharia mod loader, here are the raw links:
+A bunch of scripts for scratcharia mod loader
+
+MOST SCRIPTS ARE WRITTEN WITH AI
 
 [*test js*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/test.js)
@@ -37,3 +39,6 @@ A bunch of scripts for scratcharia mod loader, here are the raw links:
 
 [*Auto Replacement (Semi broken)*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/Auto-Replacment.js)
+
+[*Costume Extractor*
+](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/costume-extractor.js)
