@@ -1,3 +1,5 @@
+// Update v2
+
 (function() {
     'use strict';
 
@@ -288,7 +290,7 @@
                 </div>
                 
                 <div class="input-group-ldl">
-                    <label for="${ID_LDL_LIST_NAME}" class="input-label-ldl">2. List Name (e.g., world_data):</label>
+                    <label for="${ID_LDL_LIST_NAME}" class="input-label-ldl">2. List Name (e.g., _Level):</label>
                     <input type="text" id="${ID_LDL_LIST_NAME}" value="" placeholder="Enter list name..." class="input-field-ldl">
                 </div>
 
