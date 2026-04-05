@@ -79,13 +79,24 @@ const genRan = (length = 20) => {
         :root { --glass-bg: rgba(15, 15, 15, 0.5); --glass-blur: blur(18px); }
         .no-glass { --glass-bg: #111 !important; --glass-blur: none !important; }
 
+		#js-exec-container, 
+        #js-exec-container button, 
+        #js-exec-container span,
+		#js-exec-container h3,
+		#js-exec-container option,
+		#js-exec-container select,
+		#js-exec-container strong,
+        #js-exec-container div:not(.log-item) {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+        }
+
         #js-exec-container {
             position: fixed; top: 50px; left: 50px; width: 620px;
             background: var(--glass-bg); backdrop-filter: var(--glass-blur) saturate(180%);
             -webkit-backdrop-filter: var(--glass-blur) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
-            font-family: 'Segoe UI', system-ui, sans-serif; z-index: 9999999;
+            z-index: 9999999; 
             overflow: hidden; display: flex; flex-direction: column;
         }
         .exec-header {
@@ -148,11 +159,17 @@ const genRan = (length = 20) => {
         .log-info { color: #00ccff; border-color: #00ccff; }
         .log-error { color: #ff6b6b; border-color: #ff4444; }
 
+		.info-card,
+        .setting-item {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+        }
+
         .settings-pane { color: #ccc; font-size: 13px; display: none; }
         .setting-item { 
             display: flex; align-items: center; justify-content: space-between; 
             padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 8px;
         }
+		
         .info-card { background: rgba(0, 204, 255, 0.08); border: 1px solid rgba(0, 204, 255, 0.3); padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 11px; line-height: 1.5; }
         
         .btn-group { display: flex; gap: 10px; }
