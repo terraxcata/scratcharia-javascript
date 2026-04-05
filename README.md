@@ -7,6 +7,11 @@ A bunch of scripts for scratcharia mod loader
 
 MOST SCRIPTS ARE WRITTEN WITH AI
 
+Google X is my most proud project, as i did not use ai
+
+[*Google X (Javascript Executor)*
+](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/js-exec.js)
+
 [*test js*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/test.js)
 
@@ -18,6 +23,8 @@ MOST SCRIPTS ARE WRITTEN WITH AI
 
 [*custom console*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/console.js)
+
+this custom console script is not mine.
 
 [*change variables*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/change-variables.js)
