@@ -55,6 +55,7 @@ AntiAntiModDef.textContent = `
                 hasLoadedTexturePack = false;
             }, 500);
         }
+        alert("Script Worked!")
     }
 `;
 
