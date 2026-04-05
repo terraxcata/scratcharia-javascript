@@ -5,12 +5,15 @@ Scratcharia Map Editor: [HERE
 
 A bunch of scripts for scratcharia mod loader
 
-MOST SCRIPTS ARE WRITTEN WITH AI
+[*actual code in the scratch file*
+](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/Logic.js)
 
-Google X is my most proud project, as i did not use ai
+SOME SCRIPTS ARE WRITTEN WITH AI
 
 [*Google X (Javascript Executor)*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/js-exec.js)
+
+Made by me
 
 [*test js*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/test.js)
@@ -20,6 +23,8 @@ Google X is my most proud project, as i did not use ai
 
 [*allow mods*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/allow%20mods.js)
+
+Above 2 Scripts are now built in.
 
 [*custom console*
 ](https://raw.githack.com/terraxcata/scratcharia-javascript/refs/heads/main/scripts/console.js)
